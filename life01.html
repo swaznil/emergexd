@@ -15,10 +15,14 @@
     const canvas = document.getElementById("life01");
     const m = canvas.getContext("2d");
     
-    window.addEventListener("resize", () => {
+    resizeCanvas();
+
+    function resizeCanvas() {
         canvas.width = window.innerWidth * 0.8;
         canvas.height = window.innerHeight * 0.8;
-    });
+    }
+
+    window.addEventListener("resize", resizeCanvas);
 
     function draw(x,y,c,s){
         m.fillStyle = c
@@ -48,7 +52,7 @@
         return group
     }
 
-    function gravity(particles1, particles2, g){
+    function rule(particles1, particles2, g){
         for(let i=0; i < particles1.length; i++){
 
             let fx = 0;
@@ -81,9 +85,10 @@
     }
 
     red = create(200, "red");
+    blue = create(200, "blue")
 
     function update(){
-        gravity(red,red,1)
+        rule(red,red,1)
         m.clearRect(0,0,canvas.width,canvas.height)
         m.fillStyle = "black";
         m.fillRect(0,0,canvas.width,canvas.height);
@@ -97,9 +102,10 @@
     update();
 
     function resetParticles() {
-    particles = [];
-    red = create(200, "red");
-}
+        particles = [];
+        red = create(200, "red");
+        blue = create(200, "blue");
+    }
     </script>
 </body>
 </html>
