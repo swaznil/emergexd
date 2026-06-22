@@ -6,11 +6,19 @@
     <title>01</title>
 </head>
 <body>
-    <canvas id="life01" width="500" height="500"></canvas>
+    <canvas id="life01"></canvas>
+
+    <button onclick="resetParticles()">Reset</button>
 
     <script>
 
-    m = document.getElementById("life01").getContext("2d")
+    const canvas = document.getElementById("life01");
+    const m = canvas.getContext("2d");
+    
+    window.addEventListener("resize", () => {
+        canvas.width = window.innerWidth * 0.8;
+        canvas.height = window.innerHeight * 0.8;
+    });
 
     function draw(x,y,c,s){
         m.fillStyle = c
@@ -23,54 +31,63 @@
         return{"x":x, "y":y, "vx":0, "vy":0, "color":c}
     }
 
-    function random(){
-        return Math.random() * 500
+    function randomW(){
+        return Math.random() * canvas.width
+    }
+
+    function randomH(){
+        return Math.random() * canvas.height
     }
 
     function create(number,color){
         let group=[]
         for(let i = 0; i < number; i++){
-            group.push(particle(random(), random(), color))
+            group.push(particle(randomW(), randomH(), color))
             particles.push(group[i])
         }
         return group
     }
 
     function gravity(particles1, particles2, g){
-        for(let i=0;i < particles1.length; i++){
+        for(let i=0; i < particles1.length; i++){
+
             let fx = 0;
             let fy = 0;
-            for(let j =0;j<particles2.length;j++){
-                let a = particles1[i]
-                let b = particles2[j]
+            let a = particles1[i];
 
-                dx = a.x - b.x
-                dy = a.y - b.y
-                
-                d = Math.sqrt(dx*dx + dy*dy)
-                if(d>0){
-                    F = g /(d);
+            for(let j =0; j<particles2.length; j++){
+
+                let b = particles2[j];
+                let dx = a.x - b.x;
+                let dy = a.y - b.y;
+                let d = Math.sqrt(dx*dx + dy*dy);
+
+                if(d >0 && d < 80 ){
+                    let F = g /d;
                     fx += F*dx/d;
                     fy += F*dy/d;
                 }
-                
-                a.vx += fx;
-                a.vy += fy;
-
-                a.x += a.vx;
-                a.y += a.vy;
             }
+                
+            a.vx = (a.vx + fx) *0.5;
+            a.vy = (a.vy + fy) *0.5;
+
+            a.x += a.vx;
+            a.y += a.vy;
+
+            if (a.x <= 0 || a.x >= canvas.width){ a.vx *= -1}
+            if(a.y <= 0 || a.y >= canvas.height){ a.vy *= -1}
         }
     }
 
-    red = create(4, "red")
-    yellow = create(7, "yellow")
+    red = create(200, "red");
 
     function update(){
-        gravity(red,red,-0.5)
-        m.clearRect(0,0,500,500)
-        draw(0,0, "black", 500)
-        for(i=0; i<particles.length; i++){
+        gravity(red,red,1)
+        m.clearRect(0,0,canvas.width,canvas.height)
+        m.fillStyle = "black";
+        m.fillRect(0,0,canvas.width,canvas.height);
+        for(let i=0; i<particles.length; i++){
             draw(particles[i].x, particles[i].y,
             particles[i].color, 5)
         }
@@ -79,6 +96,10 @@
 
     update();
 
+    function resetParticles() {
+    particles = [];
+    red = create(200, "red");
+}
     </script>
 </body>
 </html>
