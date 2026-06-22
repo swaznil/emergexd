@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>01</title>
+</head>
+<body>
+    <canvas id="life01" width="500" height="500"></canvas>
+
+    <script>
+
+    m = document.getElementById("life01").getContext("2d")
+
+    function draw(x,y,c,s){
+        m.fillStyle = c
+        m.fillRect(x,y,s,s)
+    }
+
+    particles = []
+
+    function particle(x,y,c){
+        return{"x":x, "y":y, "vx":0, "vy":0, "color":c}
+    }
+
+    function random(){
+        return Math.random() * 500
+    }
+
+    function create(number,color){
+        let group=[]
+        for(let i = 0; i < number; i++){
+            group.push(particle(random(), random(), color))
+            particles.push(group[i])
+        }
+        return group
+    }
+
+    function gravity(particles1, particles2, g){
+        for(let i=0;i < particles1.length; i++){
+            let fx = 0;
+            let fy = 0;
+            for(let j =0;j<particles2.length;j++){
+                let a = particles1[i]
+                let b = particles2[j]
+
+                dx = a.x - b.x
+                dy = a.y - b.y
+                
+                d = Math.sqrt(dx*dx + dy*dy)
+                if(d>0){
+                    F = g /(d);
+                    fx += F*dx/d;
+                    fy += F*dy/d;
+                }
+                
+                a.vx += fx;
+                a.vy += fy;
+
+                a.x += a.vx;
+                a.y += a.vy;
+            }
+        }
+    }
+
+    red = create(4, "red")
+    yellow = create(7, "yellow")
+
+    function update(){
+        gravity(red,red,-0.5)
+        m.clearRect(0,0,500,500)
+        draw(0,0, "black", 500)
+        for(i=0; i<particles.length; i++){
+            draw(particles[i].x, particles[i].y,
+            particles[i].color, 5)
+        }
+        requestAnimationFrame(update)
+    }
+
+    update();
+
+    </script>
+</body>
+</html>
