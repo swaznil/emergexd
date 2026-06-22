@@ -4,6 +4,16 @@ html, body {
     background: black;
 }
 
+nav a{
+    position:absolute;
+    top:50%;
+    left: 50%;
+    transform:translate(-50%,-50%);
+    color:#ffffff;
+    font:32px monospace;
+    text-decoration:underline;
+}
+
 canvas {
     display: block
 }
