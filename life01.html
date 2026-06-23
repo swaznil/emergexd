@@ -4,13 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>01</title>
+
+    <style>
+    body{
+        background:dimgray;
+        color: white;
+        font-family:Arial;
+    }
+
+    #controls{
+        padding:10px;
+    }
+
+    .group{
+        border:1px solid white;
+        padding:10px;
+        margin:10px 0;
+    }
+    </style>
 </head>
+
 <body>
     <canvas id="life01"></canvas>
 
-    <button onclick="resetParticles()">Reset</button>
+    <div id = "controls">
+        <button onclick="addGroup()">Add group</button>
+        <button onclick="applyRules()">Apply Rules</button>
+        <button onclick="resetParticles()">Reset</button>
 
-    <script>
+        <div id = "groupContainer"></div>
+    </div>
+
+<script>
 
     const canvas = document.getElementById("life01");
     const m = canvas.getContext("2d");
@@ -66,15 +91,15 @@
                 let dy = a.y - b.y;
                 let d = Math.sqrt(dx*dx + dy*dy);
 
-                if(d >0 && d < 80 ){
+                if(d >0 && d < 50 ){
                     let F = g /d;
                     fx += F*dx/d;
                     fy += F*dy/d;
                 }
             }
                 
-            a.vx = (a.vx + fx) *0.5;
-            a.vy = (a.vy + fy) *0.5;
+            a.vx = (a.vx + fx) *0.4;
+            a.vy = (a.vy + fy) *0.4;
 
             a.x += a.vx;
             a.y += a.vy;
@@ -84,11 +109,60 @@
         }
     }
 
-    red = create(200, "red");
-    blue = create(200, "blue")
+    let groups = {};
+    let rules = [];
+    
+    function addGroup(){
+
+        const name = prompt("Group name?");
+        const color = prompt("Color?");
+        const count = parseInt(prompt("Particle count?"));
+
+        groups[name] = create(count, color);
+
+        const div = document.createElement("div");
+        div.className = "group";
+
+        div.innerHTML = `
+            <h3>${name}</h3>
+
+            <label>Attract/Repel With:</label>
+            <input id="${name}-target" placeholder="target group">
+
+            <label>Force:</label>
+            <input id="${name}-force" type="number" step="0.01">
+
+            <button onclick="saveRule('${name}')">Save Rule</button>
+        `;
+
+        document.getElementById("groupContainer").appendChild(div);
+    }
+
+    function saveRule(name){
+
+        const target =
+            document.getElementById(`${name}-target`).value;
+
+        const force =
+            parseFloat(
+                document.getElementById(`${name}-force`).value
+            );
+
+        rules.push({
+            a:name,
+            b:target,
+            g:force
+        });
+
+        console.log(rules);
+    }   
+
 
     function update(){
-        rule(red,red,1)
+        for(let r of rules){
+            rule(groups[r.a],groups[r.b],r.g);
+        }
+        
         m.clearRect(0,0,canvas.width,canvas.height)
         m.fillStyle = "black";
         m.fillRect(0,0,canvas.width,canvas.height);
@@ -101,11 +175,13 @@
 
     update();
 
-    function resetParticles() {
+    function resetParticles(){
         particles = [];
-        red = create(200, "red");
-        blue = create(200, "blue");
+        for(let key in groups){
+            const old = groups[key];
+            groups[key] = create(old.length,old[0].color);
+        }
     }
-    </script>
+</script>
 </body>
 </html>
