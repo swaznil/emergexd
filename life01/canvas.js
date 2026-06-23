@@ -10,9 +10,11 @@ function resizeCanvas() {
 
 window.addEventListener("resize", resizeCanvas);
 
-function draw(x,y,c,s){
-    m.fillStyle = c
-    m.fillRect(x,y,s,s)
+function draw(x, y, c, s) {
+    m.fillStyle = c;
+    m.beginPath();
+    m.arc(x, y, s, 0, Math.PI * 2);
+    m.fill();
 }
 
 particles = []
@@ -50,25 +52,39 @@ function rule(particles1, particles2, g){
             let b = particles2[j];
             let dx = a.x - b.x;
             let dy = a.y - b.y;
-            let d = Math.sqrt(dx*dx + dy*dy);
 
-            if(d >0 && d < 50 ){
+            if (dx > canvas.width / 2) dx -= canvas.width;
+            if (dx < -canvas.width / 2) dx += canvas.width;
+            if (dy > canvas.height / 2) dy -= canvas.height;
+            if (dy < -canvas.height / 2) dy += canvas.height;
+
+            let d2 = dx*dx + dy*dy;
+
+            if(d2 > 9 && d2 < 2500 ){
+                let d = Math.sqrt(d2);
                 let F = g /d;
                 fx += F*dx/d;
                 fy += F*dy/d;
             }
         }
             
-        a.vx = (a.vx + fx) *0.4;
-        a.vy = (a.vy + fy) *0.4;
+        a.vx = (a.vx + fx) * 0.4;
+        a.vy = (a.vy + fy) * 0.4;
+
+        const maxSpeed = 10;
+
+        a.vx = Math.max(-maxSpeed, Math.min(maxSpeed, a.vx));
+        a.vy = Math.max(-maxSpeed, Math.min(maxSpeed, a.vy));
 
         a.x += a.vx;
         a.y += a.vy;
 
-        if (a.x <= 0 || a.x >= canvas.width){ a.vx *= -1}
-        if(a.y <= 0 || a.y >= canvas.height){ a.vy *= -1}
-        a.x = Math.max(0, Math.min(canvas.width, a.x));
-        a.y = Math.max(0, Math.min(canvas.height, a.y));
+        if (a.x < 0) a.x += canvas.width;
+        if (a.x > canvas.width) a.x -= canvas.width;
+
+        if (a.y < 0) a.y += canvas.height;
+        if (a.y > canvas.height) a.y -= canvas.height;
+
     }
 }
 
@@ -146,14 +162,17 @@ function presetChaos(){
     groups.blue = create(300,"blue");
     groups.green = create(300,"lime");
 
-    setRule("red","red",-0.3);
-    setRule("red","blue",0.5);
+    setRule("red","red",-0.5);
+    setRule("red","blue",0.7);
+    setRule("red","green",-0.3);
 
     setRule("blue","red",-0.6);
-    setRule("blue","blue",0.3);
+    setRule("blue","blue",0.2);
+    setRule("blue","green",0.8);
 
-    setRule("green","red",0.7);
-    setRule("green","blue",-0.2);
+    setRule("green","red",0.5);
+    setRule("green","blue",-0.7);
+    setRule("green","green",-0.2);
 
     updateRuleEditor();
 }
@@ -191,19 +210,20 @@ function update(){
     document.getElementById("fps").textContent = `FPS: ${fps.toFixed(1)}`;
 
     for(let r of rules){
-        rule(groups[r.a],groups[r.b],r.g);
+        if(groups[r.a] && groups[r.b]){
+            rule(groups[r.a], groups[r.b], r.g);
+        }
     }
     
     m.clearRect(0,0,canvas.width,canvas.height)
     m.fillStyle = "black";
     m.fillRect(0,0,canvas.width,canvas.height);
-
     for(let i=0; i<particles.length; i++){
         draw(
         particles[i].x, 
         particles[i].y,
         particles[i].color, 
-        5); 
+        2.5); 
     }
     requestAnimationFrame(update);
 }
@@ -211,9 +231,13 @@ function update(){
 update();
 
 function resetParticles(){
+    const newGroups = {};
     particles = [];
+
     for(let key in groups){
-        const old = groups[key];
-        groups[key] = create(old.length,old[0].color);
+        const oldGroup = groups[key];
+    if(oldGroup.length === 0) continue;
+        newGroups[key] = create(oldGroup.length,oldGroup[0].color);
     }
+    groups = newGroups;
 }
