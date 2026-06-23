@@ -7,9 +7,13 @@
 
     <style>
     body{
-        background:dimgray;
+        background:black;
         color: white;
         font-family:Arial;
+    }
+
+    canvas{
+        border: 1px solid white;
     }
 
     #controls{
@@ -26,11 +30,25 @@
 
 <body>
     <canvas id="life01"></canvas>
-
+    <div id="fps">FPS: 0</div>
     <div id = "controls">
-        <button onclick="addGroup()">Add group</button>
-        <button onclick="applyRules()">Apply Rules</button>
-        <button onclick="resetParticles()">Reset</button>
+        <div id="creator">
+        
+        <h2>Create Group</h2>
+        <input id="groupName" placeholder="group name">
+        <input id="groupColor" type="color" value="#ff0000">
+        <input id="groupCount"
+            type="number"
+            value="200"
+            min="1"
+            max="5000">
+        <button onclick="addGroup()"> Create Group </button>
+
+        </div>
+
+        <h2>Presets</h2>
+        <button onclick="presetChaos()">Chaos</button>
+        <button onclick="presetNotChaos()">NotChaos</button>
 
         <div id = "groupContainer"></div>
     </div>
@@ -106,6 +124,8 @@
 
             if (a.x <= 0 || a.x >= canvas.width){ a.vx *= -1}
             if(a.y <= 0 || a.y >= canvas.height){ a.vy *= -1}
+            a.x = Math.max(0, Math.min(canvas.width, a.x));
+            a.y = Math.max(0, Math.min(canvas.height, a.y));
         }
     }
 
@@ -114,51 +134,121 @@
     
     function addGroup(){
 
-        const name = prompt("Group name?");
-        const color = prompt("Color?");
-        const count = parseInt(prompt("Particle count?"));
-
+        const name = document.getElementById("groupName").value;
+        const color =  document.getElementById("groupColor").value;
+        const count =  parseInt(document.getElementById("groupCount").value);
+        if(!name) return;
         groups[name] = create(count, color);
-
-        const div = document.createElement("div");
-        div.className = "group";
-
-        div.innerHTML = `
-            <h3>${name}</h3>
-
-            <label>Attract/Repel With:</label>
-            <input id="${name}-target" placeholder="target group">
-
-            <label>Force:</label>
-            <input id="${name}-force" type="number" step="0.01">
-
-            <button onclick="saveRule('${name}')">Save Rule</button>
-        `;
-
-        document.getElementById("groupContainer").appendChild(div);
+        updateRuleEditor();
     }
 
-    function saveRule(name){
+    function updateRuleEditor(){
 
-        const target =
-            document.getElementById(`${name}-target`).value;
+    const container = document.getElementById("groupContainer");
+    container.innerHTML = "";
+    const names = Object.keys(groups);
 
-        const force =
-            parseFloat(
-                document.getElementById(`${name}-force`).value
-            );
+    for(let a of names){
+        for(let b of names){
 
-        rules.push({
-            a:name,
-            b:target,
-            g:force
-        });
+            const div = document.createElement("div");
+            div.className = "group";
+            div.innerHTML = `
+                <strong>${a} → ${b}</strong>
+                <input
+                    type="range"
+                    min="-1"
+                    max="1"
+                    step="0.01"
+                    value="0"
+                    id="rule-${a}-${b}"
+                >
+                <span id="value-${a}-${b}">
+                    0
+                </span>
+            `;
 
-        console.log(rules);
-    }   
+            container.appendChild(div);
 
+            const slider =
+                document.getElementById(
+                    `rule-${a}-${b}`
+                );
+
+            slider.oninput = () => {
+                document.getElementById(`value-${a}-${b}`)
+                .innerText = slider.value;
+                setRule(a,b,parseFloat(slider.value));
+            };
+        }
+    }
+}
+
+    function setRule(a,b,g){
+        const existing = rules.find(
+            r => r.a === a && r.b === b
+        );
+        if(existing){
+            existing.g = g;
+        } else {
+            rules.push({a,b,g});
+        }
+    }
+
+    function presetChaos(){
+
+        particles = [];
+        groups = {};
+        rules = [];
+
+        groups.red = create(300,"red");
+        groups.blue = create(300,"blue");
+        groups.green = create(300,"lime");
+
+        setRule("red","red",-0.3);
+        setRule("red","blue",0.5);
+
+        setRule("blue","red",-0.6);
+        setRule("blue","blue",0.3);
+
+        setRule("green","red",0.7);
+        setRule("green","blue",-0.2);
+
+        updateRuleEditor();
+    }
+
+    function presetNotChaos(){
+
+        particles = [];
+        groups = {};
+        rules = [];
+
+        groups.red = create(500,"red");
+        groups.green = create(500,"lime");
+        groups.blue = create(500,"cyan");
+
+        setRule("red","red",-0.1);
+        setRule("green","green",-0.1);
+        setRule("blue","blue",-0.1);
+
+        setRule("red","green",0.3);
+        setRule("green","blue",0.3);
+        setRule("blue","red",0.3);
+
+        updateRuleEditor();
+    }
+
+    let last = performance.now();
+    let fps = 0;
 
     function update(){
+
+        const now = performance.now();
+        fps = 1000 / (now - last);
+        last = now;
+
+        document.getElementById("fps").textContent = `FPS: ${fps.toFixed(1)}`;
+
         for(let r of rules){
             rule(groups[r.a],groups[r.b],r.g);
         }
@@ -166,11 +256,15 @@
         m.clearRect(0,0,canvas.width,canvas.height)
         m.fillStyle = "black";
         m.fillRect(0,0,canvas.width,canvas.height);
+
         for(let i=0; i<particles.length; i++){
-            draw(particles[i].x, particles[i].y,
-            particles[i].color, 5)
+            draw(
+            particles[i].x, 
+            particles[i].y,
+            particles[i].color, 
+            5); 
         }
-        requestAnimationFrame(update)
+        requestAnimationFrame(update);
     }
 
     update();
