@@ -53,8 +53,13 @@ button,
 }
 
 .top-right{
+    position:fixed;
+    top:10px;
+    right:10px;
     display:flex;
+    align-items:center;
     gap:6px;
+    z-index:20;
 }
 
 #controls{
@@ -140,4 +145,18 @@ select:hover,
 
 .hidden{
     display:none;
+}
+
+#helpPanel{
+    position:fixed;
+    top:48px;
+    right:10px;
+    width:240px;
+    z-index:30;
+}
+
+#helpPanel p{
+    margin:0 0 10px;
+    line-height:1.4;
+    opacity:.8;
 }

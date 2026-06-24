@@ -171,3 +171,10 @@ function rebuildMatrix(){
     container.appendChild(grid);
     updateGroupCount();
 }
+
+function toggleHelp(){
+    document
+        .getElementById("helpPanel")
+        .classList
+        .toggle("hidden");
+}

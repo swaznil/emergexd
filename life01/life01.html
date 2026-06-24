@@ -13,12 +13,28 @@
     <canvas id="life01"></canvas>
     <div id="overlay"></div>
 
-    <div id="topBar">
-        <a href="../index.html" class="back-btn">← Back</a>
-        <div class="top-right">
-            <button onclick="resetParticles()"> Reset </button>  
-            <div id="fps">FPS: 0</div>
-        </div>
+    <div class="top-right">
+        <button onclick="toggleHelp()">Help</button>
+        <button onclick="resetParticles()">Reset</button>
+        <div id="fps">FPS: 0</div>
+    </div>
+
+    <div id="helpPanel" class="hidden panel">
+        <h3>Life01</h3>
+        <p>
+            Small particle life simulation
+        </p>
+        <p>
+            Right click + drag = move camera<br>
+            Mouse wheel = zoom in/out
+        </p>
+        <p>
+            Positive values attract particles<br>
+            Negative values repel particles
+        </p>
+        <p>
+            Create groups from the left panel or Try presets.
+        </p>
     </div>
 
     <div id="controls">
@@ -53,6 +69,9 @@
             </div>
             <div id="matrixContainer"></div>
         </div>
+
+        </div>
+    </div>
 
     <script src="canvas.js"></script>
     <script src="preset.js"></script>
