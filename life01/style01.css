@@ -85,8 +85,9 @@ button,
 .panel{
     margin-bottom:8px;
     padding:10px;
-    background:rgba(0,0,0,.85);
-    backdrop-filter:blur(4px);
+    background:rgba(10,10,20,.7);
+    border:1px solid rgba(120,120,255,.25);
+    backdrop-filter:blur(10px);
 }
 
 h2,
@@ -127,6 +128,7 @@ button{
     display:grid;
     gap:2px;
     align-items:center;
+    width:100%;
 }
 
 .matrix-label,
@@ -139,7 +141,8 @@ button{
 }
 
 .matrix-input{
-    width:58px;
+    width:100%;
+    min-width:0;
     margin:0;
     padding:3px 4px;
     text-align:center;

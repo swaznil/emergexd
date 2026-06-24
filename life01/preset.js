@@ -130,7 +130,7 @@ function rebuildMatrix(){
     if(names.length === 0) return;
     const grid = document.createElement("div");
     grid.className = "matrix-grid";
-    grid.style.gridTemplateColumns = `70px repeat(${names.length}, 58px)`;
+    grid.style.gridTemplateColumns = `70px repeat(${names.length}, 1fr)`;
     const empty = document.createElement("div");
     empty.className = "matrix-corner";
     grid.appendChild(empty);

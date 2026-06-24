@@ -20,7 +20,7 @@ let last=performance.now();
 const WORLD_WIDTH=3000;
 const WORLD_HEIGHT=3000;
 const MAX_SPEED=2;
-const INTERACTION_RADIUS=120;
+const INTERACTION_RADIUS=140;
 const COLLISION_RADIUS=8;
 const CELL_SIZE = INTERACTION_RADIUS;
 
@@ -68,6 +68,22 @@ function randomW(){
 
 function randomH(){
     return Math.random()*WORLD_HEIGHT;
+}
+
+function randomizeMatrix(){
+    const names = Object.keys(groups);
+    for(const row of names){
+        for(const col of names){
+            let value;
+            if(row === col){
+                value = -4 + Math.random() * 2;
+            }else{
+                value = -2 + Math.random() * 7;
+            }
+            setRule(row,col,parseFloat(value.toFixed(1)));
+        }
+    }
+    rebuildMatrix();
 }
 
 function buildSpatialGrid(){
@@ -259,7 +275,8 @@ function addGroup(){
 
 function update(){
     const now=performance.now();
-    fps=1000/(now-last);
+    const currentFPS = 1000 / (now - last);
+    fps = fps * 0.9 + currentFPS * 0.1;
     last=now;
     const fpsEl=document.getElementById("fps");
     if(fpsEl)fpsEl.textContent=`FPS: ${fps.toFixed(1)}`;
