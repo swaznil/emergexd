@@ -28,9 +28,9 @@ Simple particle simulators, using rules of repulsion and attraction to in real t
 #### Tech Used
 
 - HTML 5 with canvas
-- Vanilla JavaScript
+- JavaScript
 - CSS
 
-No frameowrks or libraries used
+PixiJS rendering library was used
 
 ---

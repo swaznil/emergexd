@@ -51,16 +51,20 @@
                 <option value="magenta">Magenta</option>
                 <option value="white">White</option>
             </select>
-            <input id="groupCount" type="number" value="200" min="1" max="5000">
+            <input id="groupCount" type="number" value="500" min="1" max="10000">
             <button onclick="addGroup()"> Create Group </button>
         </div>
 
         <div class="panel">
             <h2>Presets</h2>
-            <button onclick="presetChaos()">Chaos</button>
-            <button onclick="presetOrbit()">Orbit</button>
             <button onclick="presetGalaxy()">Galaxy</button>
-            <button onclick="presetPredators()">Predators</button>
+            <button onclick="presetEcosystem()">Ecosystem</button>
+            <button onclick="presetFlocking()">presetFlocking</button>
+            <button onclick="presetHunters()">Hunters</button>
+            <button onclick="presetChaos()">Chaos</button>
+            
+            
+
         </div>
 
         <div class="panel">
@@ -69,6 +73,7 @@
                 <button onclick="randomizeMatrix()">
                 Randomize
                 </button>
+            </div>
             <div class="matrixHint">
                 Attraction (+) / Repulsion (-)
             </div>
@@ -78,6 +83,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/pixi.js@7/dist/pixi.min.js"></script>
     <script src="canvas.js"></script>
     <script src="preset.js"></script>
 </body>
