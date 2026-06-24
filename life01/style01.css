@@ -3,6 +3,7 @@ body{
     color:#ddd;
     margin:0;
     font:14px monospace;
+    overflow:hidden;
 }
 
 #life01{
