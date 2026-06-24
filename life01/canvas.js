@@ -4,6 +4,7 @@ const m=canvas.getContext("2d");
 let particles=[];
 let groups={};
 let rules=[];
+let spatialGrid = {};
 
 let cameraX=1500;
 let cameraY=1500;
@@ -21,12 +22,13 @@ const WORLD_HEIGHT=3000;
 const MAX_SPEED=2;
 const INTERACTION_RADIUS=120;
 const COLLISION_RADIUS=8;
+const CELL_SIZE = INTERACTION_RADIUS;
 
 resizeCanvas();
 
 function resizeCanvas(){
-    canvas.width=window.innerWidth*0.8;
-    canvas.height=window.innerHeight*0.8;
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
 }
 
 function clamp(v,min,max){
@@ -68,6 +70,35 @@ function randomH(){
     return Math.random()*WORLD_HEIGHT;
 }
 
+function buildSpatialGrid(){
+    spatialGrid = {};
+    for(const p of particles){
+        const gx = Math.floor(p.x / CELL_SIZE);
+        const gy = Math.floor(p.y / CELL_SIZE);
+        const key = `${gx},${gy}`;
+        if(!spatialGrid[key]){
+            spatialGrid[key] = [];
+        }
+        spatialGrid[key].push(p);
+    }
+}
+
+function getNearbyParticles(p){
+    const gx = Math.floor(p.x / CELL_SIZE);
+    const gy = Math.floor(p.y / CELL_SIZE);
+    let nearby = [];
+    for(let ox = -1; ox <= 1; ox++){
+        for(let oy = -1; oy <= 1; oy++){
+
+            const key = `${gx + ox},${gy + oy}`;
+            if(spatialGrid[key]){
+                nearby.push(...spatialGrid[key]);
+            }
+        }
+    }
+    return nearby;
+}
+
 function draw(x,y,c,s){
     const sx=(x-cameraX)*zoom+canvas.width/2;
     const sy=(y-cameraY)*zoom+canvas.height/2;
@@ -98,6 +129,7 @@ function create(number,color){
 }
 
 function rule(g1,g2,strength){
+    if(!g1 || !g2) return;
     const radius=INTERACTION_RADIUS;
     const ideal=35;
     const sigma=26;
@@ -105,21 +137,30 @@ function rule(g1,g2,strength){
     const forceScale=0.04;
     for(let i=0;i<g1.length;i++){
         const a=g1[i];
-        for(let j=0;j<g2.length;j++){
-            const b=g2[j];
+        const nearby = getNearbyParticles(a);
+            for(let j = 0; j < nearby.length; j++){
+                const b = nearby[j];
+            if(!g2?.set?.has(b)) continue;
             if(a===b)continue;
+
             let dx=b.x-a.x;
             let dy=b.y-a.y;
+
             if(dx>WORLD_WIDTH/2)dx-=WORLD_WIDTH;
             if(dx<-WORLD_WIDTH/2)dx+=WORLD_WIDTH;
             if(dy>WORLD_HEIGHT/2)dy-=WORLD_HEIGHT;
             if(dy<-WORLD_HEIGHT/2)dy+=WORLD_HEIGHT;
+
             const d2=dx*dx+dy*dy;
             if(d2<0.0001)continue;
+
+            
+            if(d2 > radius * radius) continue;
             const d=Math.sqrt(d2);
-            if(d>radius)continue;
+
             const nx=dx/d;
             const ny=dy/d;
+
             let f=strength*Math.exp(-((d-ideal)*(d-ideal))/(2*sigma*sigma));
             if(d<COLLISION_RADIUS){
                 const t=1-d/COLLISION_RADIUS;
@@ -207,7 +248,12 @@ function addGroup(){
     const color=document.getElementById("groupColor").value;
     const count=parseInt(document.getElementById("groupCount").value);
     if(!name)return;
-    groups[name]=create(count,color);
+    const newParticles = create(count, color);
+    groups[name] = {
+        particles: newParticles,
+        set: new Set(newParticles)
+    };
+    rules = rules.filter(r => groups[r.a] && groups[r.b]);
     updateRuleEditor();
 }
 
@@ -238,14 +284,23 @@ function update(){
     last=now;
     const fpsEl=document.getElementById("fps");
     if(fpsEl)fpsEl.textContent=`FPS: ${fps.toFixed(1)}`;
+
     m.globalCompositeOperation="source-over";
     m.fillStyle="black";
     m.fillRect(0,0,canvas.width,canvas.height);
     m.globalCompositeOperation="lighter";
+
+    buildSpatialGrid();
+
     for(let i=0;i<rules.length;i++){
         const r=rules[i];
-        if(groups[r.a]&&groups[r.b])rule(groups[r.a],groups[r.b],r.g);
+        const groupA = groups[r.a];
+        const groupB = groups[r.b];
+    if(!groupA || !groupB) continue;
+    if(!groupA.particles || !groupB.set) continue;
+    rule(groupA.particles, groupB, r.g);
     }
+
     integrate();
     for(let i=0;i<particles.length;i++){
         const p=particles[i];
@@ -256,14 +311,19 @@ function update(){
 }
 
 function resetParticles(){
-    const newGroups={};
-    particles=[];
+    const newGroups = {};
+    particles = [];
     for(const key in groups){
-        const oldGroup=groups[key];
-        if(oldGroup.length===0)continue;
-        newGroups[key]=create(oldGroup.length,oldGroup[0].color);
+        const oldGroup = groups[key].particles;
+        if(oldGroup.length === 0) continue;
+        const color = oldGroup[0].color;
+        const newParticles = create(oldGroup.length, color);
+        newGroups[key] = {
+            particles: newParticles,
+            set: new Set(newParticles)
+        };
     }
-    groups=newGroups;
+    groups = newGroups;
 }
 
 update();

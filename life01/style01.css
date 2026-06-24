@@ -80,3 +80,14 @@ button{
 button{
     cursor:pointer;
 }
+
+.top-right{
+    display:flex;
+    gap:8px;
+    align-items:center;
+}
+
+.top-right button{
+    width:auto;
+    padding:4px 10px;
+}

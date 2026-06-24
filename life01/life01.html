@@ -15,10 +15,13 @@
     <div id="overlay"></div>
         <div id="topBar">
             <a href="../index.html" class="back-btn">← Back</a>
-            <div id="fps">FPS: 0</div>
+            <div class="top-right">
+                <button onclick="resetParticles()"> Reset </button>  
+                <div id="fps">FPS: 0</div>
+            </div>
         </div>
         
-        <button onclick="resetParticles()"> Reset </button>  
+        
    
     <div id = "controls">
     
@@ -49,7 +52,6 @@
         </div>
 
         <div id = "groupContainer"></div>
-        </div>
     </div>
     <script src="canvas.js"></script>
     <script src="preset.js"></script>
