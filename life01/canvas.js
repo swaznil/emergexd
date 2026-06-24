@@ -244,38 +244,17 @@ function setRule(a,b,g){
 }
 
 function addGroup(){
-    const name=document.getElementById("groupName").value;
-    const color=document.getElementById("groupColor").value;
-    const count=parseInt(document.getElementById("groupCount").value);
-    if(!name)return;
-    const newParticles = create(count, color);
-    groups[name] = {
-        particles: newParticles,
-        set: new Set(newParticles)
-    };
-    rules = rules.filter(r => groups[r.a] && groups[r.b]);
-    updateRuleEditor();
-}
 
-function updateRuleEditor(){
-    const container=document.getElementById("groupContainer");
-    container.innerHTML="";
-    const names=Object.keys(groups);
-    for(const a of names){
-        for(const b of names){
-            const existing=rules.find(r=>r.a===a&&r.b===b);
-            const currentValue=existing?existing.g:0;
-            const div=document.createElement("div");
-            div.className="group";
-            div.innerHTML=`<strong>${a} → ${b}</strong><input type="range" min="-5" max="5" step="0.01" value="${currentValue}" id="${ruleId(a,b)}"><span id="${valueId(a,b)}">${currentValue}</span>`;
-            container.appendChild(div);
-            const slider=document.getElementById(ruleId(a,b));
-            slider.oninput=()=>{
-                document.getElementById(valueId(a,b)).innerText=slider.value;
-                setRule(a,b,parseFloat(slider.value));
-            };
-        }
-    }
+    const name = document.getElementById("groupName").value.trim();
+    const color = document.getElementById("groupColor").value;
+    const count = parseInt(document.getElementById("groupCount").value);
+    if(!name || groups[name]) return;
+    const newParticles = create(count,color);
+    groups[name] = {
+        particles:newParticles,
+        set:new Set(newParticles)
+    };
+    rebuildMatrix();
 }
 
 function update(){
@@ -311,19 +290,25 @@ function update(){
 }
 
 function resetParticles(){
+
     const newGroups = {};
+
     particles = [];
+
     for(const key in groups){
         const oldGroup = groups[key].particles;
         if(oldGroup.length === 0) continue;
         const color = oldGroup[0].color;
-        const newParticles = create(oldGroup.length, color);
+        const newParticles = create(oldGroup.length,color);
         newGroups[key] = {
-            particles: newParticles,
-            set: new Set(newParticles)
+            particles:newParticles,
+            set:new Set(newParticles)
         };
     }
+
     groups = newGroups;
+
+    rebuildMatrix();
 }
 
 update();

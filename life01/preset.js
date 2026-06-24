@@ -36,7 +36,7 @@ function presetChaos(){
     setRule("blue", "green", -5);
     setRule("red", "blue", -5);
 
-    updateRuleEditor();
+    rebuildMatrix();
 }
 
 function presetPredators(){
@@ -51,7 +51,7 @@ function presetPredators(){
     setRule("predator", "prey", 5);
     setRule("prey", "predator", -5);
 
-    updateRuleEditor();
+    rebuildMatrix();
 }
 
 function presetOrbit(){
@@ -76,7 +76,7 @@ function presetOrbit(){
     setRule("red", "blue", 2);
     setRule("blue", "red", 2);
 
-    updateRuleEditor();
+    rebuildMatrix();
 }
 
 function presetGalaxy(){
@@ -107,5 +107,67 @@ function presetGalaxy(){
     setRule("arm2", "arm3", 1);
     setRule("arm3", "arm1", 1);
 
-    updateRuleEditor();
+    rebuildMatrix();
+}
+
+const interactions = {};
+
+function toggleHelp(){
+    document.getElementById("helpPanel").classList.toggle("hidden");
+}
+
+function updateGroupCount(){
+    const names = Object.keys(groups);
+    document.getElementById("groupCountLabel").textContent = 
+    `${names.length} group${names.length !== 1 ? "s" : ""}`;
+}
+
+function rebuildMatrix(){
+    const container = document.getElementById("matrixContainer");
+    if(!container) return;
+    container.innerHTML = "";
+    const names = Object.keys(groups);
+    if(names.length === 0) return;
+    const grid = document.createElement("div");
+    grid.className = "matrix-grid";
+    grid.style.gridTemplateColumns = `70px repeat(${names.length}, 58px)`;
+    const empty = document.createElement("div");
+    empty.className = "matrix-corner";
+    grid.appendChild(empty);
+
+    for(const name of names){
+        const label = document.createElement("div");
+        label.className = "matrix-label";
+        label.textContent = name;
+        const p = groups[name].particles?.[0];
+        if(p) label.style.color = p.color;
+        grid.appendChild(label);
+    }
+
+    for(const row of names){
+        const rowLabel = document.createElement("div");
+        rowLabel.className = "matrix-label";
+        rowLabel.textContent = row;
+        const rp = groups[row].particles?.[0];
+        if(rp) rowLabel.style.color = rp.color;
+        grid.appendChild(rowLabel);
+        for(const col of names){
+            const existing = rules.find(r=>r.a===row&&r.b===col);
+            const value = existing ? existing.g : 0;
+            const input = document.createElement("input");
+            input.type = "number";
+            input.step = "0.1";
+            input.min = "-8";
+            input.max = "8";
+            input.value = value;
+            input.className = "matrix-input";
+            input.oninput = ()=>{
+                const v = parseFloat(input.value) || 0;
+                setRule(row,col,v);
+            };
+            grid.appendChild(input);
+        }
+    }
+    container.appendChild(grid);
+    updateGroupCount();
 }

@@ -2,7 +2,6 @@ body{
     background:#111;
     color:#ddd;
     margin:0;
-    font:14px monospace;
     overflow:hidden;
 }
 
@@ -15,55 +14,67 @@ body{
 #overlay{
     position:fixed;
     inset:0;
+    background:rgba(0,0,0,.1);
     pointer-events:none;
-    background:rgba(0,0,0,.15);
 }
 
 #topBar{
     position:fixed;
-    top:12px;
-    left:12px;
+    top:10px;
+    left:10px;
     right:12px;
-
     display:flex;
     justify-content:space-between;
     align-items:center;
+    z-index:20;
 }
 
 .back-btn,
 #fps,
+.panel,
+input,
+select,
 button,
-.panel{
-    background:#111;
-    border:1px solid #444;
-    color:#ddd;
+.matrix-label,
+.matrix-corner,
+.matrix-input{
+    background:black;
+    color:white;
+    border:1px solid gray;
 }
 
 .back-btn{
     text-decoration:none;
-    padding:4px 8px;
+    padding:4px 7px;
 }
 
 #fps{
-    padding:4px 8px;
+    padding:3px 7px;
+}
+
+.top-right{
+    display:flex;
+    gap:6px;
 }
 
 #controls{
     position:fixed;
-    top:50px;
-    left:12px;
-    width:260px;
+    top:48px;
+    left:10px;
+    width:270px;
+    max-height:92vh;
+    overflow-y:auto;
+    z-index:10;
 }
 
 .panel{
-    padding:10px;
-    margin-bottom:10px;
+    margin-bottom:8px;
+    padding:8px;
 }
 
-h2,
 h3{
-    margin:0 0 8px;
-    font-size:14px;
+    margin:0 0 6px;
+    font-size:13px;
     font-weight:normal;
 }
 
@@ -71,23 +82,62 @@ input,
 select,
 button{
     width:100%;
-    box-sizing:border-box;
     margin:4px 0;
-    padding:4px;
-    border:1px solid #444;
+    padding:5px;
+    box-sizing:border-box;
 }
 
 button{
     cursor:pointer;
 }
 
-.top-right{
-    display:flex;
-    gap:8px;
+button:hover,
+input:hover,
+select:hover,
+.matrix-input:focus{
+    border-color:white;
+    outline:none;
+}
+
+.matrixHint{
+    opacity:.7;
+    font-size:12px;
+    margin-bottom:6px;
+}
+
+#matrixContainer{
+    overflow:auto;
+}
+
+.matrix-grid{
+    display:grid;
+    gap:2px;
     align-items:center;
 }
 
-.top-right button{
-    width:auto;
-    padding:4px 10px;
+.matrix-label,
+.matrix-corner{
+    height:26px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:11px;
+}
+
+.matrix-input{
+    width:58px;
+    margin:0;
+    padding:3px 4px;
+    text-align:center;
+}
+
+.emptyMatrix{
+    padding:10px;
+    text-align:center;
+    opacity:.6;
+    border:1px dashed gray;
+}
+
+.hidden{
+    display:none;
 }
