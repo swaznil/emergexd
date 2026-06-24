@@ -3,6 +3,7 @@ body{
     color:#ddd;
     margin:0;
     overflow:hidden;
+    font-family:Arial, sans-serif;
 }
 
 #life01{
@@ -29,6 +30,13 @@ body{
     z-index:20;
 }
 
+#back-btn{
+    position:fixed;
+    top:10px;
+    left:10px;
+    z-index:30;
+}
+
 .back-btn,
 #fps,
 .panel,
@@ -38,18 +46,20 @@ button,
 .matrix-label,
 .matrix-corner,
 .matrix-input{
-    background:black;
-    color:white;
-    border:1px solid gray;
+    background:#000;
+    color:#fff;
+    border:1px solid #555;
+    border-radius:4px;
 }
 
 .back-btn{
     text-decoration:none;
-    padding:4px 7px;
+    padding:5px 8px;
+    transition:.15s;
 }
 
 #fps{
-    padding:3px 7px;
+    padding:4px 8px;
 }
 
 .top-right{
@@ -74,13 +84,19 @@ button,
 
 .panel{
     margin-bottom:8px;
-    padding:8px;
+    padding:10px;
+    background:rgba(0,0,0,.85);
+    backdrop-filter:blur(4px);
+}
+
+h2,
+h3{
+    margin:0 0 8px;
+    font-weight:normal;
 }
 
 h3{
-    margin:0 0 6px;
     font-size:13px;
-    font-weight:normal;
 }
 
 input,
@@ -88,20 +104,13 @@ select,
 button{
     width:100%;
     margin:4px 0;
-    padding:5px;
+    padding:6px;
     box-sizing:border-box;
 }
 
 button{
     cursor:pointer;
-}
-
-button:hover,
-input:hover,
-select:hover,
-.matrix-input:focus{
-    border-color:white;
-    outline:none;
+    transition:.15s;
 }
 
 .matrixHint{
@@ -140,7 +149,7 @@ select:hover,
     padding:10px;
     text-align:center;
     opacity:.6;
-    border:1px dashed gray;
+    border:1px dashed #666;
 }
 
 .hidden{
