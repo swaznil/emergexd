@@ -18,7 +18,7 @@ let last=performance.now();
 
 const WORLD_WIDTH=3000;
 const WORLD_HEIGHT=3000;
-const MAX_SPEED=6;
+const MAX_SPEED=2;
 const INTERACTION_RADIUS=120;
 const COLLISION_RADIUS=8;
 
@@ -33,8 +33,31 @@ function clamp(v,min,max){
     return Math.max(min,Math.min(max,v));
 }
 
+function clampCamera(){
+    const halfW=canvas.width/(50*zoom);
+    const halfH=canvas.height/(50*zoom);
+    const minX=halfW;
+    const maxX=WORLD_WIDTH-halfW;
+    const minY=halfH;
+    const maxY=WORLD_HEIGHT-halfH;
+    cameraX=minX>maxX?WORLD_WIDTH/2:clamp(cameraX,minX,maxX);
+    cameraY=minY>maxY?WORLD_HEIGHT/2:clamp(cameraY,minY,maxY);
+}
+
+function safeId(s){
+    return String(s).replace(/[^a-zA-Z0-9_-]/g,"_");
+}
+
+function ruleId(a,b){
+    return `rule-${safeId(a)}-${safeId(b)}`;
+}
+
+function valueId(a,b){
+    return `value-${safeId(a)}-${safeId(b)}`;
+}
+
 function particle(x,y,c){
-    return{x,y,vx:0,vy:0,color:c};
+    return{x,y,vx:0,vy:0,fx:0,fy:0,color:c};
 }
 
 function randomW(){
@@ -48,20 +71,16 @@ function randomH(){
 function draw(x,y,c,s){
     const sx=(x-cameraX)*zoom+canvas.width/2;
     const sy=(y-cameraY)*zoom+canvas.height/2;
-
     if(sx<-50||sy<-50||sx>canvas.width+50||sy>canvas.height+50)return;
-
-    m.globalAlpha=.12;
+    m.globalAlpha=0.12;
     m.fillStyle=c;
     m.beginPath();
     m.arc(sx,sy,s*4*zoom,0,Math.PI*2);
     m.fill();
-
-    m.globalAlpha=.35;
+    m.globalAlpha=0.35;
     m.beginPath();
     m.arc(sx,sy,s*2.2*zoom,0,Math.PI*2);
     m.fill();
-
     m.globalAlpha=1;
     m.beginPath();
     m.arc(sx,sy,s*zoom,0,Math.PI*2);
@@ -79,65 +98,70 @@ function create(number,color){
 }
 
 function rule(g1,g2,strength){
+    const radius=INTERACTION_RADIUS;
+    const ideal=35;
+    const sigma=26;
+    const closeRepel=2.8;
+    const forceScale=0.04;
     for(let i=0;i<g1.length;i++){
-    const a=g1[i];
-    let fx=0;
-    let fy=0;
-
+        const a=g1[i];
         for(let j=0;j<g2.length;j++){
             const b=g2[j];
             if(a===b)continue;
-
             let dx=b.x-a.x;
             let dy=b.y-a.y;
-
             if(dx>WORLD_WIDTH/2)dx-=WORLD_WIDTH;
             if(dx<-WORLD_WIDTH/2)dx+=WORLD_WIDTH;
             if(dy>WORLD_HEIGHT/2)dy-=WORLD_HEIGHT;
             if(dy<-WORLD_HEIGHT/2)dy+=WORLD_HEIGHT;
-
             const d2=dx*dx+dy*dy;
-            if(d2<1)continue;
-
+            if(d2<0.0001)continue;
             const d=Math.sqrt(d2);
-
+            if(d>radius)continue;
+            const nx=dx/d;
+            const ny=dy/d;
+            let f=strength*Math.exp(-((d-ideal)*(d-ideal))/(2*sigma*sigma));
             if(d<COLLISION_RADIUS){
-                const push=(COLLISION_RADIUS-d)*0.3;
-                fx-=dx/d*push;
-                fy-=dy/d*push;
-                continue;
+                const t=1-d/COLLISION_RADIUS;
+                f-=closeRepel*t*t;
             }
-
-            if(d<INTERACTION_RADIUS){
-                const t=1-d/INTERACTION_RADIUS;
-                const f=strength*t*t*0.08;
-                fx+=dx*f;
-                fy+=dy*f;
-            }
+            const falloff=1-d/radius;
+            f*=falloff*forceScale;
+            a.fx+=nx*f;
+            a.fy+=ny*f;
         }
-
-        a.vx=(a.vx+fx)*0.94;
-        a.vy=(a.vy+fy)*0.94;
-
-        const speed=Math.sqrt(a.vx*a.vx+a.vy*a.vy);
-
-        if(speed>MAX_SPEED){
-            a.vx=a.vx/speed*MAX_SPEED;
-            a.vy=a.vy/speed*MAX_SPEED;
-        }
-
-    a.x+=a.vx;
-    a.y+=a.vy;
-
-    if(a.x<0)a.x+=WORLD_WIDTH;
-    if(a.x>=WORLD_WIDTH)a.x-=WORLD_WIDTH;
-    if(a.y<0)a.y+=WORLD_HEIGHT;
-    if(a.y>=WORLD_HEIGHT)a.y-=WORLD_HEIGHT;
     }
 }
 
-    window.addEventListener("resize",resizeCanvas);
-    canvas.addEventListener("contextmenu",e=>e.preventDefault());
+function integrate(){
+    for(let i=0;i<particles.length;i++){
+        const p=particles[i];
+        p.fx+=(Math.random()-0.5)*0.002;
+        p.fy+=(Math.random()-0.5)*0.002;
+        p.vx=(p.vx+p.fx)*0.97;
+        p.vy=(p.vy+p.fy)*0.97;
+        const speed=Math.hypot(p.vx,p.vy);
+        if(speed>MAX_SPEED){
+            p.vx=p.vx/speed*MAX_SPEED;
+            p.vy=p.vy/speed*MAX_SPEED;
+        }
+        p.x+=p.vx;
+        p.y+=p.vy;
+        p.fx=0;
+        p.fy=0;
+        if(p.x<0)p.x+=WORLD_WIDTH;
+        if(p.x>=WORLD_WIDTH)p.x-=WORLD_WIDTH;
+        if(p.y<0)p.y+=WORLD_HEIGHT;
+        if(p.y>=WORLD_HEIGHT)p.y-=WORLD_HEIGHT;
+    }
+}
+
+window.addEventListener("resize",()=>{
+    resizeCanvas();
+    clampCamera();
+});
+
+canvas.addEventListener("contextmenu",e=>e.preventDefault());
 
 canvas.addEventListener("mousedown",e=>{
     if(e.button!==2)return;
@@ -146,31 +170,30 @@ canvas.addEventListener("mousedown",e=>{
     lastY=e.clientY;
 });
 
-    window.addEventListener("mouseup",()=>{dragging=false;});
+window.addEventListener("mouseup",()=>{
+    dragging=false;
+});
 
 window.addEventListener("mousemove",e=>{
     if(!dragging)return;
-
     cameraX-=(e.clientX-lastX)/zoom;
     cameraY-=(e.clientY-lastY)/zoom;
-
     lastX=e.clientX;
     lastY=e.clientY;
+    clampCamera();
 });
 
-canvas.addEventListener("wheel",e=>{e.preventDefault();
-
+canvas.addEventListener("wheel",e=>{
+    e.preventDefault();
     const mx=e.offsetX;
     const my=e.offsetY;
-
     const wx=cameraX+(mx-canvas.width/2)/zoom;
     const wy=cameraY+(my-canvas.height/2)/zoom;
-
     zoom*=e.deltaY>0?0.9:1.1;
     zoom=clamp(zoom,0.1,8);
-
     cameraX=wx-(mx-canvas.width/2)/zoom;
     cameraY=wy-(my-canvas.height/2)/zoom;
+    clampCamera();
 },{passive:false});
 
 function setRule(a,b,g){
@@ -183,9 +206,7 @@ function addGroup(){
     const name=document.getElementById("groupName").value;
     const color=document.getElementById("groupColor").value;
     const count=parseInt(document.getElementById("groupCount").value);
-
     if(!name)return;
-
     groups[name]=create(count,color);
     updateRuleEditor();
 }
@@ -193,29 +214,18 @@ function addGroup(){
 function updateRuleEditor(){
     const container=document.getElementById("groupContainer");
     container.innerHTML="";
-
     const names=Object.keys(groups);
-
     for(const a of names){
         for(const b of names){
-
             const existing=rules.find(r=>r.a===a&&r.b===b);
             const currentValue=existing?existing.g:0;
-
             const div=document.createElement("div");
             div.className="group";
-
-            div.innerHTML=`
-            <strong>${a} → ${b}</strong>
-            <input type="range" min="-5" max="5" step="0.01" value="${currentValue}" id="rule-${a}-${b}">
-            <span id="value-${a}-${b}">${currentValue}</span>`;
-
+            div.innerHTML=`<strong>${a} → ${b}</strong><input type="range" min="-5" max="5" step="0.01" value="${currentValue}" id="${ruleId(a,b)}"><span id="${valueId(a,b)}">${currentValue}</span>`;
             container.appendChild(div);
-
-            const slider=document.getElementById(`rule-${a}-${b}`);
-
+            const slider=document.getElementById(ruleId(a,b));
             slider.oninput=()=>{
-                document.getElementById(`value-${a}-${b}`).innerText=slider.value;
+                document.getElementById(valueId(a,b)).innerText=slider.value;
                 setRule(a,b,parseFloat(slider.value));
             };
         }
@@ -226,28 +236,28 @@ function update(){
     const now=performance.now();
     fps=1000/(now-last);
     last=now;
-
-    document.getElementById("fps").textContent=`FPS: ${fps.toFixed(1)}`;
-
+    const fpsEl=document.getElementById("fps");
+    if(fpsEl)fpsEl.textContent=`FPS: ${fps.toFixed(1)}`;
+    m.globalCompositeOperation="source-over";
+    m.fillStyle="black";
+    m.fillRect(0,0,canvas.width,canvas.height);
+    m.globalCompositeOperation="lighter";
     for(let i=0;i<rules.length;i++){
         const r=rules[i];
         if(groups[r.a]&&groups[r.b])rule(groups[r.a],groups[r.b],r.g);
     }
-
-    m.fillStyle="black";
-    m.fillRect(0,0,canvas.width,canvas.height);
-
+    integrate();
     for(let i=0;i<particles.length;i++){
         const p=particles[i];
         draw(p.x,p.y,p.color,4);
     }
+    m.globalCompositeOperation="source-over";
     requestAnimationFrame(update);
 }
 
 function resetParticles(){
     const newGroups={};
     particles=[];
-
     for(const key in groups){
         const oldGroup=groups[key];
         if(oldGroup.length===0)continue;
@@ -255,4 +265,5 @@ function resetParticles(){
     }
     groups=newGroups;
 }
+
 update();
