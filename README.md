@@ -8,6 +8,12 @@ Simple particle simulators where repulsion and attraction occurs between particl
 Project can be run by cloning the repository and opening index.html or directly through the link:
 
 ```
+https://emergexd.vercel.app/
+```
+
+or
+
+```
 https://swaznil.github.io/emergexd/
 ```
 
