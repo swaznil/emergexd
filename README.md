@@ -44,12 +44,21 @@ First Porject in EmergexD series
 | Positive values | Attraction |
 | Negative values | Repulsion |
 
-#### Tech Used
+### Tech Stack
 
 - HTML 5 with canvas
 - CSS
 - JavaScript
 - PixiJS rendering library
+
+### How It Works
+
+The simulation is based on simple interaction rules between particle groups. Interaction forces are applied to particle, causing particles to moveand form emergent patterns over time.
+
+Each particle belongs to a group with unique attraction or repulsion values toward other groups. Every nearby particles are checked using spatial grid optimization for better performance.
+
+The simulation is rendered using PixiJS GPU-accelerated rendering.
+
 
 ### Project Structure
 
@@ -83,7 +92,7 @@ Doing so and further researching this topic, I cam across the niche some particl
 and I was inspired by it. 
 I wanted something similar and here I am creating it as the first project in my EmergexD series, made for Horizons Hackclub.
 
-# AI Usage
+### AI Usage
 
 ChatGPT was used for:
 - Debugging JS code with general guidacnce
