@@ -18,6 +18,7 @@ const stage=new PIXI.ParticleContainer(100000,{
 
 app.stage.addChild(stage);
 
+
 let particles=[];
 let groups={};
 let rules=[];
@@ -36,12 +37,102 @@ let last=performance.now();
 
 let particleTexture;
 
+let paused=false;
+let stepFrame=false;
+let simulationSpeed=1;
+
 const WORLD_WIDTH=3000;
 const WORLD_HEIGHT=3000;
-const MAX_SPEED=2;
+const MAX_SPEED=1;
 const INTERACTION_RADIUS=140;
-const COLLISION_RADIUS=8;
-const CELL_SIZE=INTERACTION_RADIUS;
+const COLLISION_RADIUS=18;
+const CELL_SIZE=INTERACTION_RADIUS*1.2;
+const forceScale = 0.03;
+const friction = 0.985;
+
+
+/* Event Listerners*/
+window.addEventListener("resize",()=>{
+
+    clampCamera();
+});
+
+canvas.addEventListener("contextmenu",e=>e.preventDefault());
+
+canvas.addEventListener("mousedown",e=>{
+
+    if(e.button!==2)return;
+
+    dragging=true;
+
+    lastX=e.clientX;
+    lastY=e.clientY;
+});
+
+window.addEventListener("mouseup",()=>{
+    
+    dragging=false;
+});
+
+window.addEventListener("mousemove",e=>{
+
+    if(!dragging)return;
+
+    cameraX-=(e.clientX-lastX)/zoom;
+    cameraY-=(e.clientY-lastY)/zoom;
+
+    lastX=e.clientX;
+    lastY=e.clientY;
+
+    clampCamera();
+});
+
+canvas.addEventListener("wheel",e=>{
+
+    e.preventDefault();
+
+    const mx=e.offsetX;
+    const my=e.offsetY;
+
+    const wx=cameraX+(mx-canvas.width/2)/zoom;
+    const wy=cameraY+(my-canvas.height/2)/zoom;
+
+    zoom*=e.deltaY>0?0.9:1.1;
+
+    zoom=clamp(zoom,0.4,5);
+
+    cameraX=wx-(mx-canvas.width/2)/zoom;
+    cameraY=wy-(my-canvas.height/2)/zoom;
+
+    clampCamera();
+
+},{passive:false});
+
+function setRule(a,b,g){
+
+    const existing=rules.find(
+        r=>r.a===a&&r.b===b
+    );
+
+    if(existing){
+        existing.g=g;
+    }else{
+        rules.push({a,b,g});
+    }
+}
+
+window.addEventListener("keydown",e=>{
+
+    if(e.code==="Space"){
+
+        e.preventDefault();
+
+        togglePause();
+    }
+});
+
+/* Functions*/
+
 
 function clamp(v,min,max){
     return Math.max(min,Math.min(max,v));
@@ -75,25 +166,21 @@ function valueId(a,b){
 
 function createParticleTexture(){
 
-    const g=new PIXI.Graphics();
+    const g = new PIXI.Graphics();
 
     g.beginFill(0xffffff,0.03);
-    g.drawCircle(0,0,48);
+    g.drawCircle(0,0,20);
     g.endFill();
 
-    g.beginFill(0xffffff,0.12);
-    g.drawCircle(0,0,24);
-    g.endFill();
-
-    g.beginFill(0xffffff,0.45);
-    g.drawCircle(0,0,12);
+    g.beginFill(0xffffff,0.16);
+    g.drawCircle(0,0,10);
     g.endFill();
 
     g.beginFill(0xffffff,1);
-    g.drawCircle(0,0,5);
+    g.drawCircle(0,0,3);
     g.endFill();
 
-    particleTexture=app.renderer.generateTexture(g);
+    particleTexture = app.renderer.generateTexture(g);
 }
 
 function particle(x,y,c){
@@ -130,7 +217,7 @@ function randomizeMatrix(){
             if(row===col){
                 value=-4+Math.random()*2;
             }else{
-                value=-2+Math.random()*7;
+                value=-2+Math.random()*14;
             }
             setRule(
                 row,
@@ -159,23 +246,6 @@ function buildSpatialGrid(){
     }
 }
 
-function getNearbyParticles(p){
-
-    const gx=Math.floor(p.x/CELL_SIZE);
-    const gy=Math.floor(p.y/CELL_SIZE);
-    let nearby=[];
-    for(let ox=-1;ox<=1;ox++){
-        for(let oy=-1;oy<=1;oy++){
-            const key=`${gx+ox},${gy+oy}`;
-            if(spatialGrid[key]){
-                nearby.push(...spatialGrid[key]);
-            }
-        }
-    }
-
-    return nearby;
-}
-
 function create(number,color){
     const group=[];
     for(let i=0;i<number;i++){
@@ -195,10 +265,9 @@ function rule(g1,g2,strength){
     if(!g1||!g2)return;
     const radius=INTERACTION_RADIUS;
     const radius2=radius*radius;
-    const ideal=35;
+    const ideal=60;
     const sigma=26;
-    const closeRepel=2.8;
-    const forceScale=0.04;
+    const closeRepel=18;
     for(let i=0;i<g1.length;i++){
         const a=g1[i];
         const gx=(a.x/CELL_SIZE)|0;
@@ -213,8 +282,7 @@ function rule(g1,g2,strength){
                     const b=bucket[j];
 
                     if(a===b)continue;
-                    if(!g2.set.has(b))
-                        continue;
+                    if(b.color !== g2.particles[0].color)continue;
 
                     let dx=b.x-a.x;
                     let dy=b.y-a.y;
@@ -265,11 +333,11 @@ function integrate(){
 
         const p=particles[i];
 
-        p.fx+=(Math.random()-0.5)*0.002;
-        p.fy+=(Math.random()-0.5)*0.002;
+        p.fx+=(Math.random()-0.5)*0.005;
+        p.fy+=(Math.random()-0.5)*0.005;
 
-        p.vx=(p.vx+p.fx)*0.97;
-        p.vy=(p.vy+p.fy)*0.97;
+        p.vx=(p.vx+p.fx)*friction;
+        p.vy=(p.vy+p.fy)*friction;
 
         const speed=Math.hypot(p.vx,p.vy);
 
@@ -290,75 +358,6 @@ function integrate(){
 
         if(p.y<0)p.y+=WORLD_HEIGHT;
         if(p.y>=WORLD_HEIGHT)p.y-=WORLD_HEIGHT;
-    }
-}
-
-window.addEventListener("resize",()=>{
-
-    clampCamera();
-});
-
-canvas.addEventListener("contextmenu",e=>e.preventDefault());
-
-canvas.addEventListener("mousedown",e=>{
-
-    if(e.button!==2)return;
-
-    dragging=true;
-
-    lastX=e.clientX;
-    lastY=e.clientY;
-});
-
-window.addEventListener("mouseup",()=>{
-
-    dragging=false;
-});
-
-window.addEventListener("mousemove",e=>{
-
-    if(!dragging)return;
-
-    cameraX-=(e.clientX-lastX)/zoom;
-    cameraY-=(e.clientY-lastY)/zoom;
-
-    lastX=e.clientX;
-    lastY=e.clientY;
-
-    clampCamera();
-});
-
-canvas.addEventListener("wheel",e=>{
-
-    e.preventDefault();
-
-    const mx=e.offsetX;
-    const my=e.offsetY;
-
-    const wx=cameraX+(mx-canvas.width/2)/zoom;
-    const wy=cameraY+(my-canvas.height/2)/zoom;
-
-    zoom*=e.deltaY>0?0.9:1.1;
-
-    zoom=clamp(zoom,0.1,8);
-
-    cameraX=wx-(mx-canvas.width/2)/zoom;
-    cameraY=wy-(my-canvas.height/2)/zoom;
-
-    clampCamera();
-
-},{passive:false});
-
-function setRule(a,b,g){
-
-    const existing=rules.find(
-        r=>r.a===a&&r.b===b
-    );
-
-    if(existing){
-        existing.g=g;
-    }else{
-        rules.push({a,b,g});
     }
 }
 
@@ -394,85 +393,66 @@ function addGroup(){
 function update(){
 
     const now=performance.now();
-
     const currentFPS=1000/(now-last);
-
     fps=fps*0.9+currentFPS*0.1;
-
     last=now;
-
-    const fpsEl=document.getElementById("fps");
-
-    if(fpsEl){
-        fpsEl.textContent=`FPS: ${fps.toFixed(1)}`;
+    if(typeof updateStats === "function"){
+        updateStats();
     }
 
+    if(!paused || stepFrame){
     buildSpatialGrid();
+    for(let s=0;s<simulationSpeed;s++){
 
-    for(let i=0;i<rules.length;i++){
+        for(let i=0;i<rules.length;i++){
 
-        const r=rules[i];
+            const r=rules[i];
+            const groupA=groups[r.a];
+            const groupB=groups[r.b];
 
-        const groupA=groups[r.a];
-        const groupB=groups[r.b];
+            if(!groupA||!groupB) continue;
 
-        if(!groupA||!groupB)continue;
+            rule(
+                groupA.particles,
+                groupB,
+                r.g
+            );
+        }
 
-        if(!groupA.particles||!groupB.set)continue;
-
-        rule(
-            groupA.particles,
-            groupB,
-            r.g
-        );
+        integrate();
     }
 
-    integrate();
+    stepFrame=false;
+}
 
     for(let i=0;i<particles.length;i++){
-
         const p=particles[i];
 
-        p.sprite.x=
-            (p.x-cameraX)*zoom+
-            canvas.width/2;
+        p.sprite.x=(p.x-cameraX)*zoom+canvas.width/2;
+        p.sprite.y=(p.y-cameraY)*zoom+canvas.height/2;
 
-        p.sprite.y=
-            (p.y-cameraY)*zoom+
-            canvas.height/2;
-
-        const scale=Math.max(
-            0.25,
-            zoom*0.45
-        );
-
+        const scale = Math.max(0.75, zoom * 0.05)
         p.sprite.scale.set(scale);
     }
-
     requestAnimationFrame(update);
 }
 
 function resetParticles(){
-
     const newGroups={};
 
     for(const p of particles){
 
         stage.removeChild(p.sprite);
-
         p.sprite.destroy();
     }
 
     particles=[];
 
     for(const key in groups){
-
         const oldGroup=groups[key].particles;
-
         if(oldGroup.length===0)continue;
 
         const color=oldGroup[0].color;
-
         const newParticles=create(
             oldGroup.length,
             color
@@ -483,12 +463,8 @@ function resetParticles(){
             set:new Set(newParticles)
         };
     }
-
     groups=newGroups;
-
     rebuildMatrix();
 }
 
-createParticleTexture();
-
-update();
+/* execution in preset.js*/

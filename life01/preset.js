@@ -208,10 +208,7 @@ function rebuildMatrix(){
 
         for(const col of names){
 
-            const value=
-                rules.find(
-                    r=>r.a===row&&r.b===col
-                )?.g ?? 0;
+            const value=rules.find(r=>r.a===row&&r.b===col)?.g ?? 0;
 
             const input=document.createElement("input");
 
@@ -224,32 +221,55 @@ function rebuildMatrix(){
 
             colorCell(input,value);
 
-            input.addEventListener("input",()=>{
-                const v=parseFloat(input.value)||0;
-                setRule(row,col,v);
-                colorCell(input,v);
-            });
+        input.addEventListener("input",()=>{
+            const v=parseFloat(input.value)||0;
+            setRule(row,col,v);
+            colorCell(input,v);
+        });
 
-            input.addEventListener("wheel",e=>{
-                e.preventDefault();
+        input.addEventListener("wheel",e=>{
+            e.preventDefault();
+            let v=parseFloat(input.value)||0;
+            v+=e.deltaY<0 ? 0.1 : -0.1;
+            v=Math.max(-10,Math.min(10,v));
+            v=+v.toFixed(1);
 
-                let v=parseFloat(input.value)||0;
+            input.value=v;
 
-                v+=e.deltaY<0 ? 0.1 : -0.1;
-                v=Math.max(-10,Math.min(10,v));
-
-                v=+v.toFixed(1);
-
-                input.value=v;
-
-                setRule(row,col,v);
-                colorCell(input,v);
-            });
+            setRule(row,col,v);
+            colorCell(input,v);
+        });
 
             grid.appendChild(input);
         }
     }
-
     container.appendChild(grid);
     updateGroupCount();
 }
+
+function updateStats(){
+
+    const stats=document.getElementById("stats");
+    if(!stats) return;  
+    stats.innerHTML=`
+        <b>${fps.toFixed(0)}</b> FPS<br>
+        ${particles.length} particles<br>
+        ${Object.keys(groups).length} groups<br>
+        ${rules.length} rules`;
+}
+
+function togglePause(){
+    paused=!paused;
+    const btn=document.getElementById("pauseBtn");
+    if(btn){
+        btn.textContent=paused? "▶": "⏸";
+    }
+}
+
+function stepSimulation(){
+    paused=true;
+    stepFrame=true;
+}
+
+createParticleTexture();
+update();

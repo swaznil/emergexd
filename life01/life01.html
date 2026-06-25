@@ -11,37 +11,34 @@
 <body>
 
     <canvas id="life01"></canvas>
-    <div id="overlay"></div>
-    <div id="topBar">
-        <div id="back-btn"><a href="../index.html" class="back-btn">← Back</a></div>
-        <div class="top-right">
-            <button onclick="toggleHelp()">Help</button>
-            <button onclick="resetParticles()">Reset</button>
-            <div id="fps">FPS: 0</div>
-        </div>
-    </div>
-    <div id="helpPanel" class="hidden panel">
-        <h3>Life01</h3>
-        <p>
-            Small particle life simulation
-        </p>
-        <p>
-            Right click + drag = move camera<br>
-            Mouse wheel = zoom in/out
-        </p>
-        <p>
-            Positive values attract particles<br>
-            Negative values repel particles
-        </p>
-        <p>
-            Create groups from the left panel or Try presets.
-        </p>
-    </div>
 
-    <div id="controls">
-        <div class="panel">
-            <h3>Create Group</h3>
-            <input id="groupName" placeholder="Group name">
+    <header id="topBar">
+
+        <a href="../index.html" class="back-btn">
+            ← Back
+        </a>
+
+        <div id="stats">
+            60 FPS · 3000 Particles · 4 Groups
+        </div>
+
+        <button
+            id="helpBtn"
+            class="icon-btn"
+            onclick="toggleHelp()"
+            title="Help">
+            ?
+        </button>
+
+    </header>
+
+    <aside id="controls">
+        <section class="panel">
+            <h2>Create Group</h2>
+            <input
+                id="groupName"
+                placeholder="Group name">
+
             <select id="groupColor">
                 <option value="red">Red</option>
                 <option value="lime">Green</option>
@@ -51,39 +48,88 @@
                 <option value="magenta">Magenta</option>
                 <option value="white">White</option>
             </select>
-            <input id="groupCount" type="number" value="500" min="1" max="10000">
-            <button onclick="addGroup()"> Create Group </button>
-        </div>
 
-        <div class="panel">
+            <input
+                id="groupCount"
+                type="number"
+                value="500">
+
+            <button onclick="addGroup()">
+                Create
+            </button>
+
+        </section>
+
+        <section class="panel">
+
             <h2>Presets</h2>
             <button onclick="presetGalaxy()">Galaxy</button>
             <button onclick="presetEcosystem()">Ecosystem</button>
-            <button onclick="presetFlocking()">presetFlocking</button>
+            <button onclick="presetFlocking()">Flocking</button>
             <button onclick="presetHunters()">Hunters</button>
             <button onclick="presetChaos()">Chaos</button>
-            
-            
 
-        </div>
+        </section>
 
-        <div class="panel">
-            <div class="matrix-header">
-                <h3>Interaction Matrix</h3>
-                <button onclick="randomizeMatrix()">
-                Randomize
-                </button>
+        <section class="panel">
+            <div class="panel-header">
+                <h2>Interactions</h2>
+                <button onclick="randomizeMatrix()">Randomize</button>
             </div>
-            <div class="matrixHint">
-                Attraction (+) / Repulsion (-)
-            </div>
+
             <div id="matrixContainer"></div>
-        </div>
+        </section>
+    </aside>
+
+    <div id="simControls">
+        <button
+            class="sim-btn"
+            onclick="resetParticles()">
+            ↺
+        </button>
+
+        <button
+            id="pauseBtn"
+            class="sim-btn primary"
+            onclick="togglePause()">
+            ⏸
+        </button>
+
+        <button
+            class="sim-btn"
+            onclick="stepSimulation()">
+            ⏭
+        </button>
+
+    </div>
+
+    <div id="helpPanel" class="hidden">
+        <div class="panel-header">
+            <h2>Help</h2>
+
+            <button
+                class="close-btn"
+                onclick="toggleHelp()">
+                ✕
+            </button>
 
         </div>
+
+        <p>
+            Small particle life simulation.
+        </p>
+
+        <ul>
+            <li>Right click + drag → Move camera</li>
+            <li>Mouse wheel → Zoom</li>
+            <li>Positive values → Attraction</li>
+            <li>Negative values → Repulsion</li>
+        </ul>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/pixi.js@7/dist/pixi.min.js"></script>
+
     <script src="canvas.js"></script>
     <script src="preset.js"></script>
 </body>
