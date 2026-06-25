@@ -33,6 +33,7 @@ First Porject in EmergexD series
 
 ![Example of particle simulation](assets/Screenshot01.png)
 
+---
 
 #### Controls
 
@@ -52,6 +53,7 @@ First Porject in EmergexD series
 
 ### Project Structure
 
+```text
 emergexd/
 │
 ├── index.html
@@ -59,14 +61,15 @@ emergexd/
 ├── style.css
 ├── README.md
 │
-├───assets/
-│       Screenshot01.png
+├── assets/
+│   └── Screenshot01.png
 │
 └── life01/
     ├── life01.html
     ├── canvas.js
     ├── preset.js
     └── style01.css
+```
 
 ---
 
