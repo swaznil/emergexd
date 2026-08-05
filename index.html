@@ -3,18 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>EmergexD</title>
-    <link rel ="stylesheet" href="style.css">
+
+    <title>EmergexD · Molecular Systems</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+    <canvas id="canvas"></canvas>
 
-    <nav class="menu">
-        <a href="life01/life01.html">Life 01</a>
-        <a href="life02/life02.html">Life 02</a>
-    </nav>
+    <header class="topbar">
+        <a href="index.html" class="brand" aria-label="EmergexD home">
+            <span class="brand-mark"></span>
+            <span>EMERGEXD</span>
+        </a>
 
-    <canvas id = "canvas"></canvas>
+    </header>
+
+    <main class="interface">
+
+        <section class="life-grid">
+
+            <a href="life01/life01.html" class="life-project">
+                <div class="project-topline">
+                    <span>Experiment / 01</span>
+                    <span>Particle system</span>
+                </div>
+
+                <div class="life-visual">
+                    <span class="particle particle-a"></span>
+                    <span class="particle particle-b"></span>
+                    <span class="particle particle-c"></span>
+                    <span class="particle particle-d"></span>
+
+                    <div class="connection connection-one"></div>
+                    <div class="connection connection-two"></div>
+
+                    <span class="life-index">01</span>
+                </div>
+
+                <div class="life-content">
+                    <p>Original interaction model</p>
+                    <h2>Particle Life</h2>
+
+                    <div class="project-enter">
+                        <span>Open experiment</span>
+                        <span>↗</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="life02/life02.html" class="life-project">
+                <div class="project-topline">
+                    <span>Experiment / 02</span>
+                    <span>Advanced particle system</span>
+                </div>
+
+                <div class="life-visual life-visual-two">
+                    <span class="particle particle-a"></span>
+                    <span class="particle particle-b"></span>
+                    <span class="particle particle-c"></span>
+                    <span class="particle particle-d"></span>
+
+                    <div class="orbit-ring"></div>
+                    <div class="orbit-core"></div>
+
+                    <span class="life-index">02</span>
+                </div>
+
+                <div class="life-content">
+                    <p>Advanced interaction model</p>
+                    <h2>Particle Life II</h2>
+
+                    <div class="project-enter">
+                        <span>Open experiment</span>
+                        <span>↗</span>
+                    </div>
+                </div>
+            </a>
+
+        </section>
+
+        <section class="molecule-project">
+
+            <div class="molecule-number" aria-hidden="true">
+                03
+            </div>
+
+            <div class="molecule-copy">
+                <p class="eyebrow">
+                    Experiment 03 / 
+                </p>
+
+                <h1>
+                    MOLECULE
+                    <span>01</span>
+                </h1>
+
+                <p class="description">
+                    Under Construction.
+                </p>
+
+                <a
+                    class="launch-button"
+                    href="molecule01/molecule01.html"
+                >
+                    <span>Enter molecular laboratory</span>
+                    <span class="launch-arrow">↗</span>
+                </a>
+            </div>
+
+            <div class="atom-display" aria-hidden="true">
+                <div class="atom-label label-proton">P+</div>
+                <div class="atom-label label-electron">E−</div>
+
+                <div class="orbit orbit-one">
+                    <span class="electron electron-one"></span>
+                </div>
+
+                <div class="orbit orbit-two">
+                    <span class="electron electron-two"></span>
+                </div>
+
+                <div class="orbit orbit-three">
+                    <span class="electron electron-three"></span>
+                </div>
+
+                <div class="nucleus">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                <div class="crosshair crosshair-horizontal"></div>
+                <div class="crosshair crosshair-vertical"></div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <span>Swaznil </span>
+        <span>2026</span>
+        <span>xD</span>
+    </footer>
 
     <script src="main.js"></script>
 </body>
