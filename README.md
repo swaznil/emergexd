@@ -35,6 +35,22 @@ First Porject in EmergexD series
 - Completely 2D
 - GPU rendering using PixiJS
 
+## For Life02 (Second Attempt) 
+
+### Improvements and new features:
+
+- Seeded simulations, so the same seed gives the same result
+- More distinct presets with their own spawn patterns
+- Reroll and custom seed controls
+- Adjustable interaction radius and simulation speed
+- Fixed timestep movement for more stable simulation
+- Faster interaction lookup using group IDs and an interaction matrix
+- Cleaner camera movement using PixiJS stage transforms
+- Better reset behavior that rebuilds the active preset
+- Improved particle spawning with custom position and velocity functions
+- More polished controls, stats and preset states
+
+
 #### Screenshots
 
 ![Example of particle simulation](assets/Screenshot01.png)
@@ -78,6 +94,11 @@ emergexd/
 │
 ├── assets/
 │   └── Screenshot01.png
+├─── life02/
+│   ├── life02.html
+│   ├── canvas.js
+│   ├── preset.js
+│   └── style02.css
 │
 └── life01/
     ├── life01.html
@@ -92,8 +113,7 @@ emergexd/
 
 I came across a youtube video about The Three body problem and wanted to simulated to simulate something 
 similar, but with many bodies (in this case, particles). 
-While developing a gravity simualtor I was not satisfied with using only attractice force and I experimented 
-with negative gravity (in this case repulsion) and added different partices with different properties. 
+While developing a gravity simualtor I was not satisfied with using only attractice force and I experimented with negative gravity (in this case repulsion) and added different partices with different properties. 
 Doing so and further researching this topic, I cam across the niche some particlelife simualtor websites 
 and I was inspired by it. 
 I wanted something similar and here I am creating it as the first project in my EmergexD series, made for Horizons Hackclub.
