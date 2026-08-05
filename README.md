@@ -53,7 +53,9 @@ First Porject in EmergexD series
 
 #### Screenshots
 
-![Example of particle simulation](assets/Screenshot01.png)
+![Particle simulation first attempt - Life01 ](assets/life01.png)
+
+![Improved simulation second attempt - Life02 ](assets/life02.png)
 
 ---
 
