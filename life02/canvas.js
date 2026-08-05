@@ -26,6 +26,8 @@ const stage = new PIXI.ParticleContainer(20000, {
 
 app.stage.addChild(stage);
 
+// WORLD CONSTANTS
+
 const WORLD_WIDTH = 3000;
 const WORLD_HEIGHT = 3000;
 
@@ -35,6 +37,8 @@ const MAX_SUB_STEPS = 3;
 const MAX_SPEED = 1.35;
 const COLLISION_RADIUS = 17;
 const BASE_REPULSION = 9;
+
+// SIMULATION STATE
 
 let particles = [];
 let groups = {};
@@ -62,6 +66,8 @@ let random = mulberry32(currentSeed);
 
 let particleTexture;
 
+// CAMERA AND FRAME STATE
+
 let cameraX = WORLD_WIDTH / 2;
 let cameraY = WORLD_HEIGHT / 2;
 let zoom = 0.55;
@@ -74,6 +80,8 @@ let fps = 0;
 let lastFrameTime = performance.now();
 let accumulator = 0;
 let lastStatsUpdate = 0;
+
+// CAMERA
 
 function clampCamera() {
   const visibleHalfWidth = canvas.clientWidth / (2 * zoom);
@@ -158,6 +166,8 @@ function zoomCamera(event) {
   applyCameraTransform();
 }
 
+// GENERAL HELPERS
+
 function clamp(value, minimum, maximum) {
   return Math.max(minimum, Math.min(maximum, value));
 }
@@ -190,6 +200,8 @@ function wrapCoordinate(value, size) {
 
   return value;
 }
+
+// SEEDED RANDOM NUMBER GENERATOR
 
 function mulberry32(seed) {
   return function seededRandom() {
@@ -226,6 +238,8 @@ function randomWorldX() {
 function randomWorldY() {
   return random() * WORLD_HEIGHT;
 }
+
+// PARTICLE CREATION
 
 function createParticleTexture() {
   const graphic = new PIXI.Graphics();
@@ -326,6 +340,8 @@ function makeGroup(name, count, color, spawn) {
   return groups[name];
 }
 
+// INTERACTION RULES
+
 function setRule(groupAName, groupBName, strength) {
   const groupA = groups[groupAName];
   const groupB = groups[groupBName];
@@ -373,6 +389,8 @@ function randomizeMatrix() {
   callIfAvailable("rebuildMatrix");
 }
 
+// SPATIAL GRID
+
 function buildSpatialGrid() {
   spatialGrid.clear();
 
@@ -391,6 +409,8 @@ function buildSpatialGrid() {
     bucket.push(current);
   }
 }
+
+// PARTICLE PHYSICS
 
 function calculateForces() {
   const radiusSquared = interactionRadius * interactionRadius;
@@ -508,6 +528,8 @@ function simulateStep() {
   calculateForces();
   integrateParticles();
 }
+
+// WORLD CONTROLS
 
 function addGroup() {
   const nameInput = document.getElementById("groupName");
@@ -631,6 +653,8 @@ function setSimulationSpeed(value) {
   }
 }
 
+// INPUT EVENTS
+
 function handleKeyDown(event) {
   const target = event.target;
 
@@ -662,6 +686,8 @@ canvas.addEventListener("contextmenu", (event) => event.preventDefault());
 canvas.addEventListener("wheel", zoomCamera, {
   passive: false,
 });
+
+// ANIMATION LOOP
 
 function update(now = performance.now()) {
   const elapsed = Math.min(now - lastFrameTime, 50);
@@ -706,6 +732,8 @@ function update(now = performance.now()) {
 
   requestAnimationFrame(update);
 }
+
+// STARTUP
 
 rebuildGridDimensions();
 createParticleTexture();
