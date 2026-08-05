@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Particle Life · EmergexD</title>
+    <link rel="stylesheet" href="style02.css?v=3">
+</head>
+
+<body>
+
+    <canvas id="life02"></canvas>
+
+    <header id="topBar">
+        <a href="../index.html" class="back-btn">← EmergexD</a>
+
+        <div id="stats" aria-live="polite"></div>
+
+        <button
+            id="helpBtn"
+            class="icon-btn"
+            onclick="toggleHelp()"
+            title="Help"
+            aria-label="Open help">
+            ?
+        </button>
+    </header>
+
+    <aside id="controls">
+        <section class="panel intro-panel">
+            <div class="panel-header">
+                <div>
+                    <p class="eyebrow">Particle Life 02</p>
+                    <h1 id="presetName">Bloom</h1>
+                </div>
+                <span id="groupCountLabel" class="quiet-label">0 groups</span>
+            </div>
+            <p id="presetDescription" class="panel-copy">
+                Cycles fold into bright flower-like cells.
+            </p>
+        </section>
+
+        <section class="panel">
+            <h2>Patterns</h2>
+            <div class="preset-grid">
+                <button data-preset="Bloom" onclick="presetBloom()">Bloom</button>
+                <button data-preset="Coral" onclick="presetCoral()">Coral</button>
+                <button data-preset="Weave" onclick="presetWeave()">Weave</button>
+                <button data-preset="Pulse" onclick="presetPulse()">Pulse</button>
+                <button data-preset="Chaos" onclick="presetChaos()">Chaos</button>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2>World</h2>
+
+            <label class="control-label" for="seedInput">Seed</label>
+            <div class="inline-control">
+                <input id="seedInput" type="number" value="6969">
+                <button onclick="applySeed()">Apply</button>
+                <button onclick="rerollPreset()" title="Generate a new seed">
+                    Reroll
+                </button>
+            </div>
+
+            <label class="control-label range-label" for="radiusControl">
+                <span>Reach</span>
+                <output id="radiusValue">155</output>
+            </label>
+            <input
+                id="radiusControl"
+                type="range"
+                min="90"
+                max="230"
+                value="155"
+                oninput="setInteractionRadius(this.value)">
+
+            <label class="control-label range-label" for="speedControl">
+                <span>Time</span>
+                <output id="speedValue">1.00×</output>
+            </label>
+            <input
+                id="speedControl"
+                type="range"
+                min="0.25"
+                max="2"
+                step="0.25"
+                value="1"
+                oninput="setSimulationSpeed(this.value)">
+        </section>
+
+        <section class="panel">
+            <details>
+                <summary>Create group</summary>
+                <div class="details-body">
+                    <input id="groupName" placeholder="Group name">
+
+                    <select id="groupColor" aria-label="Group color">
+                        <option value="#ff4d6d">Rose</option>
+                        <option value="#ffbe0b">Gold</option>
+                        <option value="#55efc4">Mint</option>
+                        <option value="#3a86ff">Blue</option>
+                        <option value="#a66cff">Violet</option>
+                        <option value="#f1f5f9">White</option>
+                    </select>
+
+                    <input
+                        id="groupCount"
+                        type="number"
+                        value="400"
+                        min="1"
+                        max="3000"
+                        aria-label="Particle count">
+
+                    <button onclick="addGroup()">Add group</button>
+                </div>
+            </details>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <div>
+                    <h2>Force matrix</h2>
+                    <p class="matrix-key">
+                        <span class="attract-dot"></span> Attract
+                        <span class="repel-dot"></span> Repel
+                    </p>
+                </div>
+                <button onclick="randomizeMatrix()">Randomize</button>
+            </div>
+
+            <div id="matrixContainer"></div>
+        </section>
+    </aside>
+
+    <div id="simControls">
+        <button
+            class="sim-btn"
+            onclick="resetParticles()"
+            title="Reset pattern (R)"
+            aria-label="Reset pattern">
+            ↺
+        </button>
+
+        <button
+            id="pauseBtn"
+            class="sim-btn primary"
+            onclick="togglePause()"
+            title="Pause (Space)"
+            aria-label="Pause or resume">
+            ⏸
+        </button>
+
+        <button
+            class="sim-btn"
+            onclick="stepSimulation()"
+            title="Advance one step"
+            aria-label="Advance one step">
+            ⏭
+        </button>
+    </div>
+
+    <div id="helpPanel" class="hidden">
+        <div class="panel-header">
+            <h2>How it works</h2>
+
+            <button
+                class="close-btn"
+                onclick="toggleHelp()"
+                aria-label="Close help">
+                ×
+            </button>
+        </div>
+
+        <ul>
+            <li>Right-click + drag → move camera</li>
+            <li>Mouse wheel → zoom</li>
+            <li>Space → pause or resume</li>
+            <li>R → reset the current pattern</li>
+            <li>Positive values → attraction</li>
+            <li>Negative values → repulsion</li>
+        </ul>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/pixi.js@7/dist/pixi.min.js"></script>
+
+<script src="canvas.js?v=5"></script>
+<script src="preset.js?v=5"></script>
+
+</body>
+</html>
