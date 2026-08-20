@@ -1,40 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Manrope:wght@400;500;600&display=swap');
+
 :root {
-    --bg: #070907;
+    --bg: #080a08;
     --panel: #0d100d;
     --hover: #11150f;
     --text: #e8eadf;
-    --muted: #858b80;
+    --muted: #8f958a;
     --line: rgba(232, 234, 223, 0.16);
-    --strong-line: rgba(234, 234, 223, 0.34);
-    --green: #c7ff5e;
-    --green-line: rgba(200, 255, 94, 0.34);
+    --strong-line: rgba(234, 234, 223, 0.30);
+    --green: #c3ee68;
+    --green-line: rgba(195, 238, 104, 0.30);
 }
 
-* {
-    box-sizing: border-box;
-}
-
-html,
-body {
-    width: 100%;
-    min-height: 100%;
-}
+* { box-sizing: border-box; }
+html, body { width: 100%; min-height: 100%; }
 
 body {
     margin: 0;
     min-height: 100vh;
     overflow-x: hidden;
     color: var(--text);
-    background:
-        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px),
-        var(--bg);
-    background-size: 64px 64px;
-    font-family: Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    font-family: "Manrope", sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
 }
 
-a {
-    color: inherit;
+a { color: inherit; }
+a:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 3px;
 }
 
 #canvas {
@@ -49,8 +45,8 @@ a {
 }
 
 .topbar {
-    height: 72px;
-    padding: 0 40px;
+    height: 64px;
+    padding: 0 32px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -60,33 +56,32 @@ a {
 .brand {
     display: flex;
     align-items: center;
-    gap: 12px;
-    font: 700 13px "Courier New", monospace;
-    letter-spacing: .18em;
+    gap: 10px;
+    font: 600 13px "JetBrains Mono", monospace;
     text-decoration: none;
 }
 .brand-mark {
-    width: 11px;
-    height: 11px;
+    width: 10px;
+    height: 10px;
     border: 1px solid var(--green);
     transform: rotate(45deg);
 }
 
 .interface {
-    width: min(1500px, 100%);
+    width: min(1380px, 100%);
     margin: auto;
-    padding: 40px;
+    padding: 32px;
 }
 
 .life-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     border-top: 1px solid var(--line);
     border-left: 1px solid var(--line);
 }
 .life-project {
     position: relative;
-    min-height: 430px;
+    min-height: 400px;
     display: grid;
     grid-template-rows: auto 1fr auto;
     overflow: hidden;
@@ -94,94 +89,55 @@ a {
     border-right: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
     text-decoration: none;
-    transition: background .2s, border-color .2s;
-}
-.life-project::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 2;
-    width: 0;
-    height: 2px;
-    background: var(--green);
-    transition: width .25s;
+    transition: background-color 150ms ease, border-color 150ms ease;
 }
 .life-project:hover {
     background: var(--hover);
     border-color: var(--green-line);
 }
-.life-project:hover::before {
-    width: 100%;
-}
 
 .project-topline {
-    padding: 15px 18px;
+    padding: 14px 18px;
     display: flex;
+    align-items: center;
     justify-content: space-between;
+    gap: 16px;
     color: var(--muted);
     border-bottom: 1px solid var(--line);
-    font: 10px "Courier New", monospace;
-    letter-spacing: .12em;
-    text-transform: uppercase;
+    font: 400 11px "JetBrains Mono", monospace;
 }
 
 .life-visual {
     position: relative;
-    min-height: 230px;
+    min-height: 225px;
     overflow: hidden;
     background:
-        linear-gradient(
-            90deg,
-            transparent 49.9%,
-            var(--line) 50%,
-            transparent 50.1%
-        ),
-        linear-gradient(
-            transparent 49.9%,
-            var(--line) 50%,
-            transparent 50.1%
-        );
+        linear-gradient(90deg, transparent 49.9%, var(--line) 50%, transparent 50.1%),
+        linear-gradient(transparent 49.9%, var(--line) 50%, transparent 50.1%);
 }
+
 .life-index {
     position: absolute;
     right: 18px;
-    bottom: -25px;
+    bottom: -18px;
     color: transparent;
-    font-size: clamp(100px, 14vw, 190px);
+    font-size: clamp(82px, 10vw, 138px);
     line-height: 1;
-    letter-spacing: -.09em;
+    letter-spacing: -.08em;
     -webkit-text-stroke: 1px var(--strong-line);
-    transition: transform .2s;
-}
-.life-project:hover .life-index {
-    transform: translateY(-5px);
-    -webkit-text-stroke-color: var(--green-line);
 }
 
 .particle {
     position: absolute;
-    width: 13px;
-    height: 13px;
+    width: 12px;
+    height: 12px;
     background: var(--green);
     border-radius: 50%;
 }
-.particle-a {
-    top: 27%;
-    left: 23%;
-}
-.particle-b {
-    top: 62%;
-    left: 38%;
-}
-.particle-c {
-    top: 31%;
-    right: 28%;
-}
-.particle-d {
-    right: 42%;
-    bottom: 21%;
-}
+.particle-a { top: 27%; left: 23%; }
+.particle-b { top: 62%; left: 38%; }
+.particle-c { top: 31%; right: 28%; }
+.particle-d { right: 42%; bottom: 21%; }
 
 .connection {
     position: absolute;
@@ -206,8 +162,8 @@ a {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 165px;
-    height: 165px;
+    width: 158px;
+    height: 158px;
     border: 1px solid var(--strong-line);
     border-radius: 50%;
     transform: translate(-50%, -50%) scaleY(.38) rotate(-18deg);
@@ -216,129 +172,114 @@ a {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
     background: var(--green);
     border-radius: 50%;
     transform: translate(-50%, -50%);
 }
 
 .life-content {
-    padding: 22px;
+    padding: 20px;
     border-top: 1px solid var(--line);
 }
 .life-content p {
-    margin: 0 0 8px;
+    margin: 0 0 6px;
     color: var(--muted);
-    font: 10px "Courier New", monospace;
-    letter-spacing: .1em;
-    text-transform: uppercase;
+    font: 400 12px "JetBrains Mono", monospace;
 }
 .life-content h2 {
     margin: 0;
-    font-size: clamp(28px, 3vw, 46px);
-    font-weight: 400;
-    letter-spacing: -.045em;
-    transition: color .2s;
-}
-.life-project:hover .life-content h2 {
-    color: var(--green);
+    font-size: clamp(26px, 2.7vw, 38px);
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -.035em;
 }
 
 .project-enter {
-    margin-top: 24px;
-    padding-top: 14px;
+    margin-top: 18px;
+    padding-top: 12px;
     display: flex;
+    align-items: center;
     justify-content: space-between;
     border-top: 1px solid var(--line);
-    font: 11px "Courier New", monospace;
-    letter-spacing: .08em;
-    text-transform: uppercase;
+    color: var(--muted);
+    font: 500 12px "JetBrains Mono", monospace;
 }
 .project-enter span:last-child {
     color: var(--green);
-    font-size: 18px;
+    font-size: 17px;
 }
 
 .molecule-project {
-    min-height: 650px;
+    min-height: 590px;
     display: grid;
-    grid-template-columns: 80px minmax(340px, .9fr) minmax(380px, 1.1fr);
+    grid-template-columns: 64px minmax(300px, .9fr) minmax(360px, 1.1fr);
     align-items: center;
-    gap: 36px;
+    gap: 32px;
     border: 1px solid var(--line);
     border-top: 0;
 }
 .molecule-number {
     height: 100%;
-    padding-top: 40px;
+    padding-top: 32px;
     display: flex;
     justify-content: center;
     color: var(--muted);
     border-right: 1px solid var(--line);
-    font: 12px "Courier New", monospace;
-    letter-spacing: .3em;
+    font: 400 11px "JetBrains Mono", monospace;
     writing-mode: vertical-rl;
 }
-.molecule-copy {
-    padding: 80px 0;
-}
-.eyebrow {
-    margin: 0 0 24px;
-    color: var(--green);
-    font: 11px "Courier New", monospace;
-    letter-spacing: .15em;
-    text-transform: uppercase;
-}
+
+.molecule-copy { padding: 56px 0; }
+.eyebrow { display: none; }
+
 .molecule-copy h1 {
     margin: 0;
-    font-size: clamp(64px, 9vw, 148px);
-    font-weight: 400;
-    line-height: .76;
-    letter-spacing: -.075em;
+    font-size: clamp(44px, 5.5vw, 78px);
+    font-weight: 500;
+    line-height: .94;
+    letter-spacing: -.055em;
 }
 .molecule-copy h1 span {
     display: block;
-    margin-left: .8em;
+    margin-left: .45em;
     color: transparent;
     -webkit-text-stroke: 1px var(--strong-line);
 }
 
 .description {
-    max-width: 530px;
-    margin: 42px 0 36px;
+    max-width: 500px;
+    margin: 28px 0 28px;
     color: #a9aea3;
     font-size: 15px;
-    line-height: 1.75;
+    line-height: 1.7;
 }
 
 .launch-button {
-    width: min(100%, 390px);
-    min-height: 62px;
-    padding: 0 20px;
+    width: min(100%, 340px);
+    min-height: 48px;
+    padding: 0 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     color: var(--bg);
     background: var(--green);
     border: 1px solid var(--green);
-    font: 700 12px "Courier New", monospace;
-    letter-spacing: .08em;
+    border-radius: 6px;
+    font: 600 12px "JetBrains Mono", monospace;
     text-decoration: none;
-    text-transform: uppercase;
-    transition: background .2s, color .2s;
+    transition: background-color 150ms ease, color 150ms ease;
 }
 .launch-button:hover {
     color: var(--green);
     background: transparent;
 }
-.launch-arrow {
-    font-size: 21px;
-}
+.launch-arrow { font-size: 19px; }
 
 .atom-display {
     position: relative;
-    width: min(42vw, 610px);
+    width: min(40vw, 560px);
     aspect-ratio: 1;
     justify-self: center;
 }
@@ -363,15 +304,9 @@ a {
     border: 1px solid var(--strong-line);
     border-radius: 50%;
 }
-.orbit-one {
-    transform: rotate(18deg) scaleY(.4);
-}
-.orbit-two {
-    transform: rotate(78deg) scaleY(.4);
-}
-.orbit-three {
-    transform: rotate(138deg) scaleY(.4);
-}
+.orbit-one { transform: rotate(18deg) scaleY(.4); }
+.orbit-two { transform: rotate(78deg) scaleY(.4); }
+.orbit-three { transform: rotate(138deg) scaleY(.4); }
 
 .electron {
     position: absolute;
@@ -383,15 +318,9 @@ a {
     background: var(--green);
     border-radius: 50%;
 }
-.electron-one {
-    animation: electron 5.5s linear infinite;
-}
-.electron-two {
-    animation: electron 7s linear infinite reverse;
-}
-.electron-three {
-    animation: electron 4.8s linear infinite;
-}
+.electron-one { animation: electron 5.5s linear infinite; }
+.electron-two { animation: electron 7s linear infinite reverse; }
+.electron-three { animation: electron 4.8s linear infinite; }
 
 .nucleus {
     position: absolute;
@@ -410,135 +339,75 @@ a {
     background: var(--text);
     border-radius: 50%;
 }
-.nucleus span:nth-child(1) {
-    grid-column: 2;
-}
+.nucleus span:nth-child(1) { grid-column: 2; }
 .nucleus span:nth-child(2),
-.nucleus span:nth-child(4) {
-    background: var(--green);
-}
+.nucleus span:nth-child(4) { background: var(--green); }
 
 .crosshair {
     position: absolute;
     background: var(--line);
 }
-.crosshair-horizontal {
-    top: 50%;
-    width: 100%;
-    height: 1px;
-}
-.crosshair-vertical {
-    left: 50%;
-    width: 1px;
-    height: 100%;
-}
+.crosshair-horizontal { top: 50%; width: 100%; height: 1px; }
+.crosshair-vertical { left: 50%; width: 1px; height: 100%; }
 
 .atom-label {
     position: absolute;
     z-index: 2;
-    padding: 5px 7px;
+    padding: 4px 6px;
     color: var(--muted);
     background: var(--bg);
     border: 1px solid var(--line);
-    font: 10px "Courier New", monospace;
+    border-radius: 4px;
+    font: 400 10px "JetBrains Mono", monospace;
 }
 
-.label-proton {
-    top: 45%;
-    right: 10%;
-}
-
-.label-electron {
-    bottom: 17%;
-    left: 8%;
-}
-
+.label-proton { top: 45%; right: 10%; }
+.label-electron { bottom: 17%; left: 8%; }
 
 .footer {
-    min-height: 72px;
-    padding: 0 40px;
+    min-height: 64px;
+    padding: 0 32px;
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
     color: var(--muted);
     border-top: 1px solid var(--line);
-    font: 10px "Courier New", monospace;
-    letter-spacing: .11em;
+    font: 400 10px "JetBrains Mono", monospace;
 }
-.footer span:last-child {
-    text-align: right;
-}
+.footer span:last-child { text-align: right; }
 
 @keyframes electron {
-    to {
-        transform: rotate(360deg);
-    }
+    to { transform: rotate(360deg); }
 }
 
 @media (max-width: 900px) {
-    .topbar,
-    .footer {
-        padding-inline: 22px;
-    }
-
-    .interface {
-        padding: 22px;
-    }
-
-    .molecule-project {
-        grid-template-columns: 42px 1fr;
-    }
-    .molecule-copy {
-        padding: 70px 25px 40px;
-    }
-
+    .topbar, .footer { padding-inline: 22px; }
+    .interface { padding: 22px; }
+    .molecule-project { grid-template-columns: 42px 1fr; }
+    .molecule-copy { padding: 56px 24px 36px; }
     .atom-display {
         grid-column: 2;
-        width: min(90%, 480px);
-        margin-bottom: 60px;
+        width: min(90%, 470px);
+        margin-bottom: 52px;
     }
 }
 
 @media (max-width: 650px) {
-    .interface {
-        padding: 12px;
-    }
-    .life-grid {
-        grid-template-columns: 1fr;
-    }
-    .life-project {
-        min-height: 390px;
-    }
-
-    .molecule-project {
-        grid-template-columns: 28px 1fr;
-        gap: 0;
-    }
-    .molecule-copy {
-        padding: 60px 18px 38px;
-    }
-    .molecule-copy h1 {
-        font-size: clamp(52px, 18vw, 84px);
-    }
-
-    .atom-display {
-        width: 92%;
-        margin-bottom: 45px;
-    }
-
+    .interface { padding: 12px; }
+    .life-grid { grid-template-columns: 1fr; }
+    .life-project { min-height: 370px; }
+    .molecule-project { grid-template-columns: 28px 1fr; gap: 0; }
+    .molecule-copy { padding: 46px 18px 32px; }
+    .molecule-copy h1 { font-size: clamp(42px, 14vw, 62px); }
+    .atom-display { width: 92%; margin-bottom: 40px; }
     .footer {
-        padding: 20px 18px;
+        padding: 18px;
         grid-template-columns: 1fr auto;
         gap: 8px;
     }
-    .footer span:nth-child(2) {
-        grid-column: 1 / -1;
-        grid-row: 2;
-    }
+    .footer span:nth-child(2) { grid-column: 1 / -1; grid-row: 2; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .electron {
-        animation: none;
-    }
+    .electron { animation: none; }
 }

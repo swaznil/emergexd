@@ -1,11 +1,12 @@
 # emergexd
 
-Simple particle simulators where repulsion and attraction occurs between particles in real time, creating complex emergent patterns and behaviors from simple rules.
+EmergexD is a simple particle simulators where repulsion and attraction occurs between particles in real time, creating complex emergent patterns and behaviors from simple rules.
 
+---
 
 ### Live Demo
 
-Project can be run by cloning the repository and opening index.html or directly through the link:
+Project can be viewed through the link:
 
 ```
 https://emergexd.vercel.app/
@@ -35,21 +36,22 @@ First Porject in EmergexD series
 - Completely 2D
 - GPU rendering using PixiJS
 
+---
+
 ## For Life02 (Second Attempt) 
 
-### Improvements and new features:
+#### Improvements and new features:
 
-- Seeded simulations, so the same seed gives the same result
-- More distinct presets with their own spawn patterns
-- Reroll and custom seed controls
-- Adjustable interaction radius and simulation speed
-- Fixed timestep movement for more stable simulation
-- Faster interaction lookup using group IDs and an interaction matrix
-- Cleaner camera movement using PixiJS stage transforms
-- Better reset behavior that rebuilds the active preset
-- Improved particle spawning with custom position and velocity functions
-- More polished controls, stats and preset states
-
+- More distinct presets with different spawn configurations
+- Options for re-roll and custom seeds
+- Ability to adjust interaction radius and simulation speed
+- Interaction happens in a fixed time step
+- Improved lookup performance with group ID and interaction matrix
+- Smoother camera movements due to PixiJS stage transforms
+- Reset behavior re-creates the current preset
+- Simulations use seeds, so they give the same results when using the same seed
+- More accurate particle spawns using custom spawn position and velocity functions.
+- Improvements in controls, stats, and preset behaviors.
 
 #### Screenshots
 
@@ -61,77 +63,74 @@ First Porject in EmergexD series
 
 ---
 
-#### Controls
+### Controls
 
 | Control | Action |
-|---|---|
+|---------|--------|
 | Right click + drag | Move Camera |
 | Mouse wheel | Zoom |
 | Positive values | Attraction |
 | Negative values | Repulsion |
 
+---
+
 ### Tech Stack
 
-- HTML 5 with canvas
-- CSS
-- JavaScript
+- HTML, CSS, JavaScript (Vanilla)
 - PixiJS rendering library
 
 ### How It Works
 
-The simulation is based on simple interaction rules between particle groups. Interaction forces are applied to particle, causing particles to moveand form emergent patterns over time.
+The simulation is governed by the simple interaction rules for different particle groups. Interaction forces are applied to particle, causing particles to moveand form emergent patterns over time.
 
-Each particle belongs to a group with unique attraction or repulsion values toward other groups. Every nearby particles are checked using spatial grid optimization for better performance.
+Each particle is a part of some group having distinct attraction/repulsion properties towards other groups. All neighboring particles are examined with the help of spatial grid optimization.
 
-The simulation is rendered using PixiJS GPU-accelerated rendering.
+The simulation is rendered using GPU-accelerated PixiJS rendering engine.
 
+---
 
 ### Project Structure
 
 ```text
 emergexd/
-│
 ├── index.html
 ├── main.js
 ├── style.css
 ├── README.md
-│
 ├── assets/
 │   └── Screenshot01.png
-├─── life02/
-│   ├── life02.html
+├── life01/
+│   ├── life01.html
 │   ├── canvas.js
 │   ├── preset.js
-│   └── style02.css
-│
-└── life01/
-    ├── life01.html
+│   └── style01.css
+└── life02/
+    ├── life02.html
     ├── canvas.js
     ├── preset.js
-    └── style01.css
+    └── style02.css
 ```
 
 ---
 
 ### Motivation
 
-I came across a youtube video about The Three body problem and wanted to simulated to simulate something 
-similar, but with many bodies (in this case, particles). 
-While developing a gravity simualtor I was not satisfied with using only attractice force and I experimented with negative gravity (in this case repulsion) and added different partices with different properties. 
-Doing so and further researching this topic, I cam across the niche some particlelife simualtor websites 
-and I was inspired by it. 
-I wanted something similar and here I am creating it as the first project in my EmergexD series, made for Horizons Hackclub.
+I discovered an interesting youtube video on “The three body problem” and thought of doing something similar but involving more than three bodies (in this case: many particles). 
+While working on a gravity simulator, I didn’t like the idea of just relying on attractive forces and decided to work on negative gravity forces (repulsive forces) as well as introduce different particles with unique properties.
+This is how I discovered that there are some niche ParticleLife simulation sites out there, which really inspired me.
+
+I thought of doing something similar and hence here’s my first two project in the EmergexD series.
 
 ### AI Usage
 
 ChatGPT was used for:
 - Debugging JS code with general guidacnce
-- Discussing simulation logics
+- Discussing and learning simulation logics
+- For drawing shapes on landing page UI
 - Performance Improvements and code cleanup 
 
-All project decesions, implementaion choices and over third quarter of coding was done by me.
+All project decisions, implementation choices and most of the coding were done by me.
 
 ---
 
 More experiments will be added over time.
-Made for Horizons, Hackclub.
