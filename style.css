@@ -211,7 +211,7 @@ a:focus-visible {
     font-size: 17px;
 }
 
-.molecule-project {
+.gravity-project {
     min-height: 590px;
     display: grid;
     grid-template-columns: 64px minmax(300px, .9fr) minmax(360px, 1.1fr);
@@ -220,7 +220,7 @@ a:focus-visible {
     border: 1px solid var(--line);
     border-top: 0;
 }
-.molecule-number {
+.gravity-number {
     height: 100%;
     padding-top: 32px;
     display: flex;
@@ -231,17 +231,16 @@ a:focus-visible {
     writing-mode: vertical-rl;
 }
 
-.molecule-copy { padding: 56px 0; }
-.eyebrow { display: none; }
+.gravity-copy {padding: 56px 0;}
 
-.molecule-copy h1 {
+.gravity-copy h1 {
     margin: 0;
     font-size: clamp(44px, 5.5vw, 78px);
     font-weight: 500;
     line-height: .94;
     letter-spacing: -.055em;
 }
-.molecule-copy h1 span {
+.gravity-copy h1 span {
     display: block;
     margin-left: .45em;
     color: transparent;
@@ -250,7 +249,7 @@ a:focus-visible {
 
 .description {
     max-width: 500px;
-    margin: 28px 0 28px;
+    margin: 28px 0;
     color: #a9aea3;
     font-size: 15px;
     line-height: 1.7;
@@ -277,82 +276,113 @@ a:focus-visible {
 }
 .launch-arrow { font-size: 19px; }
 
-.atom-display {
+.gravity-display {
     position: relative;
     width: min(40vw, 560px);
     aspect-ratio: 1;
     justify-self: center;
-}
-.atom-display::before,
-.atom-display::after {
-    content: "";
-    position: absolute;
-    border-radius: 50%;
-}
-.atom-display::before {
-    inset: 8%;
+    overflow: hidden;
     border: 1px solid var(--line);
-}
-.atom-display::after {
-    inset: 22%;
-    border: 1px dashed var(--line);
+    background:
+        linear-gradient(90deg, transparent 49.9%, var(--line) 50%, transparent 50.1%),
+        linear-gradient(transparent 49.9%, var(--line) 50%, transparent 50.1%);
 }
 
-.orbit {
-    position: absolute;
-    inset: 14%;
-    border: 1px solid var(--strong-line);
-    border-radius: 50%;
-}
-.orbit-one { transform: rotate(18deg) scaleY(.4); }
-.orbit-two { transform: rotate(78deg) scaleY(.4); }
-.orbit-three { transform: rotate(138deg) scaleY(.4); }
-
-.electron {
-    position: absolute;
-    top: 50%;
-    left: -5px;
-    width: 10px;
-    height: 10px;
-    margin-top: -5px;
-    background: var(--green);
-    border-radius: 50%;
-}
-.electron-one { animation: electron 5.5s linear infinite; }
-.electron-two { animation: electron 7s linear infinite reverse; }
-.electron-three { animation: electron 4.8s linear infinite; }
-
-.nucleus {
+.gravity-display::before,
+.gravity-display::after {
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 76px;
-    display: grid;
-    grid-template-columns: repeat(3, 20px);
-    justify-content: center;
-    gap: 1px;
-    transform: translate(-50%, -50%) rotate(15deg);
-}
-.nucleus span {
-    width: 20px;
-    height: 20px;
-    background: var(--text);
+    border: 1px solid var(--line);
     border-radius: 50%;
+    transform: translate(-50%, -50%);
 }
-.nucleus span:nth-child(1) { grid-column: 2; }
-.nucleus span:nth-child(2),
-.nucleus span:nth-child(4) { background: var(--green); }
 
-.crosshair {
+.gravity-display::before {
+    width: 70%;
+    height: 70%;
+}
+
+.gravity-display::after {
+    width: 38%;
+    height: 38%;
+    border-style: dashed;
+}
+
+.gravity-orbit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 1px solid var(--strong-line);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+.orbit-a {width: 42%;height: 42%;}
+.orbit-b {width: 65%;height: 65%;}
+.orbit-c {width: 88%;height: 88%;}
+
+.gravity-body {
+    position: absolute;
+    z-index: 2;
+    border-radius: 50%;
+    background: var(--green);
+}
+
+.body-main {
+    top: 50%;
+    left: 50%;
+    width: 46px;
+    height: 46px;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 28px rgba(195, 238, 104, .22);
+}
+.body-a {
+    top: calc(50% - 21%);
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    transform: translate(-50%, -50%);
+}
+
+.body-b {
+    top: 50%;
+    left: calc(50% + 32.5%);
+    width: 17px;
+    height: 17px;
+    background: var(--text);
+    transform: translate(-50%, -50%);
+}
+
+.body-c {
+    top: calc(50% + 38%);
+    left: 30%;
+    width: 8px;
+    height: 8px;
+    transform: translate(-50%, -50%);
+}
+
+.gravity-cross {
     position: absolute;
     background: var(--line);
 }
-.crosshair-horizontal { top: 50%; width: 100%; height: 1px; }
-.crosshair-vertical { left: 50%; width: 1px; height: 100%; }
 
-.atom-label {
+.gravity-cross.horizontal {
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+}
+.gravity-cross.vertical {
+    top: 0;
+    left: 50%;
+    width: 1px;
+    height: 100%;
+}
+
+.gravity-label {
     position: absolute;
-    z-index: 2;
+    z-index: 3;
     padding: 4px 6px;
     color: var(--muted);
     background: var(--bg);
@@ -361,8 +391,8 @@ a:focus-visible {
     font: 400 10px "JetBrains Mono", monospace;
 }
 
-.label-proton { top: 45%; right: 10%; }
-.label-electron { bottom: 17%; left: 8%; }
+.label-mass {top: 12px;left: 12px;}
+.label-gravity {right: 12px;bottom: 12px;}
 
 .footer {
     min-height: 64px;
@@ -374,18 +404,15 @@ a:focus-visible {
     border-top: 1px solid var(--line);
     font: 400 10px "JetBrains Mono", monospace;
 }
-.footer span:last-child { text-align: right; }
 
-@keyframes electron {
-    to { transform: rotate(360deg); }
-}
+.footer span:last-child {text-align: right;}
 
 @media (max-width: 900px) {
-    .topbar, .footer { padding-inline: 22px; }
-    .interface { padding: 22px; }
-    .molecule-project { grid-template-columns: 42px 1fr; }
-    .molecule-copy { padding: 56px 24px 36px; }
-    .atom-display {
+    .topbar,.footer {padding-inline: 22px;}
+    .interface {padding: 22px;}
+    .gravity-project {grid-template-columns: 42px 1fr;}
+    .gravity-copy {padding: 56px 24px 36px;}
+    .gravity-display {
         grid-column: 2;
         width: min(90%, 470px);
         margin-bottom: 52px;
@@ -393,21 +420,21 @@ a:focus-visible {
 }
 
 @media (max-width: 650px) {
-    .interface { padding: 12px; }
-    .life-grid { grid-template-columns: 1fr; }
-    .life-project { min-height: 370px; }
-    .molecule-project { grid-template-columns: 28px 1fr; gap: 0; }
-    .molecule-copy { padding: 46px 18px 32px; }
-    .molecule-copy h1 { font-size: clamp(42px, 14vw, 62px); }
-    .atom-display { width: 92%; margin-bottom: 40px; }
+    .interface {padding: 12px;}
+    .life-grid {grid-template-columns: 1fr;}
+    .life-project {min-height: 370px;}
+    .gravity-project {grid-template-columns: 28px 1fr;gap: 0;}
+    .gravity-copy {padding: 46px 18px 32px;}
+    .gravity-copy h1 {font-size: clamp(42px, 14vw, 62px);}
+    .gravity-display {width: 92%;margin-bottom: 40px;}
+
     .footer {
         padding: 18px;
         grid-template-columns: 1fr auto;
         gap: 8px;
     }
-    .footer span:nth-child(2) { grid-column: 1 / -1; grid-row: 2; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .electron { animation: none; }
+    .footer span:nth-child(2) {
+        grid-column: 1 / -1;
+        grid-row: 2;
+    }
 }

@@ -93,22 +93,14 @@ The simulation is rendered using GPU-accelerated PixiJS rendering engine.
 
 ```text
 emergexd/
+├── assets/          # Images
+├── life01/          # Particle life v1
+├── life02/          # Particle life v2
+├── gravity01/       # Gravity experiment
 ├── index.html
 ├── main.js
 ├── style.css
-├── README.md
-├── assets/
-│   └── Screenshot01.png
-├── life01/
-│   ├── life01.html
-│   ├── canvas.js
-│   ├── preset.js
-│   └── style01.css
-└── life02/
-    ├── life02.html
-    ├── canvas.js
-    ├── preset.js
-    └── style02.css
+└── README.md
 ```
 
 ---
@@ -133,4 +125,3 @@ All project decisions, implementation choices and most of the coding were done b
 
 ---
 
-More experiments will be added over time.
