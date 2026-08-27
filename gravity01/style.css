@@ -1,0 +1,167 @@
+:root {
+    color-scheme: dark;
+    --background: #0a0707;
+    --panel: rgba(15, 17, 14, 0.9);
+    --panel-hover: #181b18;
+    --border: rgba(230, 226, 222, 0.2);
+    --strong-border: rgba(236, 238, 229, 0.4);
+    --text: #eaece1;
+    --muted: #8d9288;
+    --accent: #c4ee6c;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    background: var(--background);
+    color: var(--text);
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+}
+button {
+    min-height: 32px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--panel);
+    cursor: pointer;
+}
+button:hover {
+    background: var(--panel-hover);
+    border-color: var(--strong-border);
+}
+button.active {
+    color: #090b09;
+    background: var(--accent);
+    border-color: var(--accent);
+}
+#gravity01 {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    cursor: crosshair;
+}
+#topBar {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    pointer-events: none;
+}
+#topBar > * {
+    pointer-events: auto;
+}
+.back-btn {
+    min-height: 34px;
+    padding: 0 11px;
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--panel);
+    color: var(--text);
+    text-decoration: none;
+}
+#stats {
+    display: flex;
+    gap: 14px;
+    padding: 9px 11px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: var(--panel);
+    color: var(--muted);
+}
+#stats b {
+    color: var(--text);
+    font-weight: normal;
+}
+.top-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 4px;
+}
+.top-actions button {
+    padding: 0 12px;
+}
+#controls {
+    position: fixed;
+    top: 58px;
+    left: 12px;
+    z-index: 15;
+    width: 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    pointer-events: none;
+}
+#controls > * {
+    pointer-events: auto;
+}
+.panel {
+    border: 1px solid var(--border);
+    background: var(--panel);
+}
+.panel h2 {
+    margin: 0;
+    padding: 8px 9px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: normal;
+}
+.panel > *:not(h2) {
+    margin-left: 9px;
+    margin-right: 9px;
+}
+.panel > *:last-child {
+    margin-bottom: 9px;
+}
+.control-label {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 4px;
+    color: var(--muted);
+}
+.range-label {
+    display: flex;
+    justify-content: space-between;
+}
+.range-label output {
+    color: var(--text);
+}
+input[type="range"] {
+    width: calc(100% - 18px);
+    accent-color: var(--accent);
+}
+.checkbox-control {
+    margin-top: 9px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--muted);
+    cursor: pointer;
+}
+.checkbox-control input {
+    margin: 0;
+    accent-color: var(--accent);
+}
+.body-presets {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    margin-top: 9px;
+}
+.body-presets button {
+    margin: 0;
+}

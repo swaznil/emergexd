@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gravity 01</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<canvas id="gravity01"></canvas>
+
+<header id="topBar">
+    <a href="../index.html" class="back-btn">← EmergexD</a>
+
+    <div id="stats">
+        <span><b id="bodyCount">0</b> bodies</span>
+        <span><b id="massCount">0</b> mass</span>
+        <span><b id="fps">0</b> fps</span>
+    </div>
+
+    <div class="top-actions">
+        <button id="pauseBtn">Pause</button>
+        <button id="clearBtn">Clear</button>
+    </div>
+</header>
+
+<aside id="controls">
+    <section class="panel">
+        <h2>Spawn body</h2>
+
+        <div class="body-presets">
+            <button data-mass="5">Light</button>
+            <button data-mass="60" class="active">Medium</button>
+            <button data-mass="350">Heavy</button>
+            <button data-mass="1500">Massive</button>
+        </div>
+
+        <label class="control-label range-label">
+            <span>Mass</span>
+            <output id="massValue">60</output>
+        </label>
+
+        <input id="massControl" type="range" min="1" max="2000" value="60">
+
+        <label class="checkbox-control">
+            <input id="anchorControl" type="checkbox">
+            <span>Anchor body</span>
+        </label>
+    </section>
+
+    <section class="panel">
+        <h2>World</h2>
+
+        <label class="control-label range-label">
+            <span>Gravity</span>
+            <output id="gravityValue">500</output>
+        </label>
+
+        <input id="gravityControl" type="range" min="50" max="1200" step="10" value="500">
+    </section>
+</aside>
+
+<script src="canvas.js"></script>
+</body>
+</html>
