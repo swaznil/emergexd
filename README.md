@@ -42,16 +42,13 @@ First Porject in EmergexD series
 
 #### Improvements and new features:
 
-- More distinct presets with different spawn configurations
-- Options for re-roll and custom seeds
+- New distinct presets that spawn differently
 - Ability to adjust interaction radius and simulation speed
-- Interaction happens in a fixed time step
-- Improved lookup performance with group ID and interaction matrix
-- Smoother camera movements due to PixiJS stage transforms
-- Reset behavior re-creates the current preset
-- Simulations use seeds, so they give the same results when using the same seed
-- More accurate particle spawns using custom spawn position and velocity functions.
-- Improvements in controls, stats, and preset behaviors.
+- Interaction takes place at fixed intervals
+- Better performance
+- Smoother Camera movement due to PixiJS
+- The reset option creates the same preset again
+- Simulations are based on the seed, which means they produce the same result with the same seed.
 
 #### Screenshots
 
